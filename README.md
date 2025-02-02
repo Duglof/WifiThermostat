@@ -15,5 +15,7 @@ WfiThermostat for ESP8266 or ESP32
 | BME 680       | SDI        | GPIO 4 (D2)           | GPIO 21       | GPIO 22 (D4) |
 |      or       |            |                       |               |              |
 | DS18B20       |  DQ        | GPIO 4 (D2)           | GPIO 15       | D10          |
+|               |            |                       |               |              |
+| RELAY NO      |            | GPIO 12 (D6)          |               |              |
 
 Sous réserve de tests
