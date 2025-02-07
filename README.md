@@ -1,5 +1,20 @@
 # WifiThermostat
 WfiThermostat for ESP8266 or ESP32
+- Serveur Web pour la configuration et le suivi
+- Données stockées dans le système de fichier LittleFS 
+- Configuration du réseau Wifi en se connectant au thermostat avec un téléphone mobile
+- Paramétrage de la Time zone pour avoir la bonne heure
+- Gestion automatique de l'heure été/hivers via la Time Zone configurée
+- Paramètrage du serveur de temps (ntp)
+- 28 plages horaires au total
+- Chaque plage peut être attribuée à 1 ou plusieurs jours (jusqu'à 7)
+  - Une plage peut être affectée à un seul jour
+  - Une plage peut être affectée du Lundi au Vendredi
+  - Une plage peut être affectée au Week End
+  - Pour un plage on coche les jours concernés
+- Envoi possible des données à un serveur MQTT
+- Envoi possible d'un requète http
+- Mise à jour via OTA (Wifi) 
 
 # Hardware
 
