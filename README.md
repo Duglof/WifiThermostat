@@ -1,5 +1,5 @@
 # WifiThermostat
-WfiThermostat for ESP8266 or ESP32
+WifiThermostat for ESP8266 or ESP32
 - Serveur Web pour la configuration et le suivi
 - Données stockées dans le système de fichier LittleFS 
 - Configuration du réseau Wifi en se connectant au thermostat avec un téléphone mobile
