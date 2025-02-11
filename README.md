@@ -37,13 +37,10 @@ Sous réserve de tests
 
 ## ESP 8266
 
-<div style="width: 60%; height: 60%">
-![esp8266 gpio](docs/esp12e-gpio.png)
-</div>
+[esp8266 gpio](docs/esp12e-gpio.png)
 
 ## ESP32 30 Pins
 
-<div style="width: 60%; height: 60%">
-![esp32 gpio](docs/ESP32-dev-kit-30pins-pinout.png)
-</div>
+[esp32 gpio](docs/ESP32-dev-kit-30pins-pinout.png)
+
 
