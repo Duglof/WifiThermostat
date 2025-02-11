@@ -34,3 +34,16 @@ WifiThermostat for ESP8266 or ESP32
 | RELAY NO      |            | GPIO 12 (D6)          |               |              |
 
 Sous réserve de tests
+
+## ESP 8266
+
+<div style="width: 60%; height: 60%">
+![esp8266 gpio](docs/esp12e-gpio.png)
+</div>
+
+## ESP32 30 Pins
+
+<div style="width: 60%; height: 60%">
+![esp32 gpio](docs/ESP32-dev-kit-30pins-pinout.png)
+</div>
+
