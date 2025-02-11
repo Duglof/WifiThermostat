@@ -31,7 +31,7 @@ WifiThermostat for ESP8266 or ESP32
 |      or       |            |                       |               |              |
 | DS18B20       |  DQ        | GPIO 4 (D2)           | GPIO 15       | D10          |
 |               |            |                       |               |              |
-| RELAY NO      |            | GPIO 12 (D6)          |               |              |
+| RELAY NO      |            | GPIO 12 (D6)          | A5 (GPIO 33)  | idem ?       |
 
 Sous réserve de tests
 
