@@ -43,4 +43,7 @@ Sous réserve de tests
 
 [esp32 gpio](docs/ESP32-dev-kit-30pins-pinout.png)
 
+## ESP32-C6 
+
+[esp32-C6](docs/ESP-C6-Mini.png)
 
