@@ -18,7 +18,8 @@ WifiThermostat for ESP8266 or ESP32
 
 # Hardware
 
-|    Module     | Module Pin | ESP8266 ESP12E/ESP12S | ESP32 30 pin  | ESP32-C6 Mini |
+|    Module     | Module Pin |      ESP82666         |           ESP32               |
+|               |            | ESP12E/ESP12S         | ESP32 30 pin  | ESP32-C6 Mini |
 |---------------|------------|-----------------------|---------------|---------------|
 | HI-LINK       | -Vo        | G                     | GND           |  GND          |
 | HI-LINK       | +Vo        | VIN                   | VIN           |  +5V          |
