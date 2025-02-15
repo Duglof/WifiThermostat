@@ -59,7 +59,7 @@ Sous réserve de tests
 [esp32-C6](docs/ESP-C6-Mini.png)
 
 # Software
-|       Nom     |         Module            | Version  |  Lien                                                                                           |   Commentaire   | Voir | 
+|       Nom     |      Localisation         | Version  |  Nom ou Lien                                                                                    |   Commentaire   | Voir | 
 |---------------|---------------------------|----------|-------------------------------------------------------------------------------------------------|-----------------|------|
 | Arduino IDE   | Desktop                   | V1.8.18  |                                                                                                 | Pas version 2.x | (1)  |
 | Ardiuno IDE   | Fichiers/Préférences      |          | http://arduino.esp8266.com/stable/package_esp8266com_index.json                                 | Pour ESP8266    | (2)  |
@@ -67,7 +67,9 @@ Sous réserve de tests
 | Arduino IDE   | Dossier Arduino/tools     | V0.5.0   | https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip | Pour ESP8266    | (3)  |
 | Arduino IDE   | Dossier Arduino/tools     | V2.0.7   | https://github.com/lorol/arduino-esp32fs-plugin/releases/download/2.0.7/esp32fs.zip             | Pour ESP32      | (4)  |
 | Arduino IDE   | Dossier Arduino/libraries |          | https://github.com/Pedroalbuquerque/ESP32WebServer                                              | Pour ESP32      | (5)  |
-| Arduino IDE   | Dossier Arduino/libraries |          |                      Syslog-master.zip
+| Arduino IDE   | Dossier Arduino/libraries |          | WifiThermostat/librairie/Syslog-master.zip                                                      |                 | (5)  |
+| Arduino IDE   |                           | V2.3.8   | OneWire                                                                                         |                 | (6)  |
+| Arduino IDE   |                           | V4.0.3   | DallasTemperature                                                                               |                 | (6)  |
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
@@ -80,3 +82,4 @@ Sous réserve de tests
 - (4) A décompresser dans le répertoire du disque Arduino/tools qui est situé à côté du répertoire Arduino/libraries (Créer le répertoire tools s'il n'existe pas)
 - (4) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils vous devez avoir 'ESP32 Sketch Data Upload'
 - (5) A décompresser dans le répertoire du disque Arduino/libraries
+- (6) A iinstaller depuis l'Arduino IDE Outils/Gérer les bibliothèques
