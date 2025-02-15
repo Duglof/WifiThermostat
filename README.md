@@ -101,4 +101,4 @@ Cela permet de convertir les valeurs hexadécimales en nom et numéro de ligne d
 ## Utilisation
 - Il faut absolument compiler votre Croquis (sinon il vous demandera de sélection un fichier elf)
 - Ouvrir le fenêtre Outils/ESP Exception Decoder (qui s'ouvrira sans poser de question)
-- Et coller dans cette fenêtre le message ci-dessus
+- Et coller dans cette fenêtre le message d'exception
