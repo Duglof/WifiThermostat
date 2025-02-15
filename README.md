@@ -85,7 +85,8 @@ Sous réserve de tests
 - (6) A installer depuis l'Arduino IDE Outils/Gérer les bibliothèques
 
 # Outils à installer (optionnel)
-Pour le debug des exceptions qui apparaitrait dans Outils/Moniteur série
+Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
+
 Cela permet de convertir les valeurs hexadécimales en nom et numéro de ligne du code source
 
 ## Installation
