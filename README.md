@@ -58,3 +58,23 @@ Sous réserve de tests
 
 [esp32-C6](docs/ESP-C6-Mini.png)
 
+# Software
+|       Nom     |         Module        | Version  |  Lien                                                                                           |   Commentaire   | Voir | 
+|---------------|-----------------------|----------|-------------------------------------------------------------------------------------------------|-----------------|------|
+| Arduino IDE   | Desktop               | V1.8.18  |                                                                                                 | Pas version 2.x | (1)  |
+| Ardiuno IDE   | Fichiers/Préférences  |          | http://arduino.esp8266.com/stable/package_esp8266com_index.json                                 | Pour ESP8266    | (2)  |
+| Ardiuno IDE   | Fichiers/Préférences  |          | https://espressif.github.io/arduino-esp32/package_esp32_index.json                              | Pour ESP32      | (2)  |
+| Arduino IDE   | Dossier Arduino/tools | V0.5.0   | https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip | Pour ESP8266    | (3)  |
+| Arduino IDE   | Dossier Arduino/tools | V2.0.7   | https://github.com/lorol/arduino-esp32fs-plugin/releases/download/2.0.7/esp32fs.zip             | Pour ESP32      | (4)  |
+
+- (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
+- (2) Ajouter les deux même si vous ne l'utilisez pas
+- (2) Séparer les lien pas une virgule
+- (2) Ne pas oublier d'aller dans le gstionnaire de cartes et d'installer : esp8266 by ESP8266 community v3.1.2
+- (2) Ne pas oublier d'aller dans le gstionnaire de cartes et d'installer : esp32 by Espressif Systems v3.1.1
+- (2) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils/Type de carte 'ESP8266 Boards (3.1.2)' et 'ESP32 Arduino'
+- (3) A décompresser dans le répertoire du disque Arduino/tools qui est situé à côté du répertoire Arduino/libraries (Créer le répertoire tools s'il n'existe pas)
+- (3) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils 'ESP8266 Sketch Data Upload'
+- (4) A décompresser dans le répertoire du disque Arduino/tools qui est situé à côté du répertoire Arduino/libraries (Créer le répertoire tools s'il n'existe pas)
+- (4) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils vous devez avoir 'ESP32 Sketch Data Upload'
+
