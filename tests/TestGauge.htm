@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Status</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.20.2/bootstrap-table.min.css" rel="stylesheet" >
+	<style>
+.form-label-center {
+	text-align: center;
+	display: block;
+	width: 100%;
+}
+
+/*
+    style pour chart temperature
+    From : https://stackoverflow.com/questions/67235098/how-to-create-semi-circle-ellipse-with-html-css-like-a-gauge-speedometer
+*/
+
+/* gauge temperture */
+.ring_temp {
+      position: relative;
+      --pointerleft: 11%;
+      --pointertop: 11%;
+      --pointerdeg: -45deg;
+      width: 50vmin;
+      height: 50vmin;
+      background-image: radial-gradient(green 0, green 50%, transparent 50%, transparent 100%), radial-gradient(red 0, red 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(orange 0, red 130deg, white 130deg, white 230deg, green 230deg, orange 360deg);
+      background-size: 11% 11%, 11% 11%, 100% 100%, 100% 100%;
+      background-repeat: no-repeat;
+      background-position: 9.2% 82.3%, 90.8% 82.3%, center center, center center;
+      border-radius: 50%;
+      border-style: none;
+}
+
+.ring_temp::after {
+      position: absolute;
+      content: '';
+      width: 5%;
+      height: 15%;
+      left: var(--pointerleft);
+      top: var(--pointertop);
+      transform: rotate(var(--pointerdeg));
+      border-style: solid;
+      border-width: 0.5vmin;
+      border-radius: 2vmin;
+      background-color: white;
+}
+
+.value .ring_temp_value {
+      font-size: 12vmin;
+}
+
+/* gauge humidity */
+.ring_hum {
+      position: relative;
+      --pointerleft: 11%;
+      --pointertop: 11%;
+      --pointerdeg: -45deg;
+      width: 50vmin;
+      height: 50vmin;
+      background-image: radial-gradient(lightblue 0, lightblue 50%, transparent 50%, transparent 100%), radial-gradient(blue 0, blue 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(DodgerBlue 0, blue 130deg, white 130deg, white 230deg, lightblue 230deg, DodgerBlue 360deg);
+      background-size: 11% 11%, 11% 11%, 100% 100%, 100% 100%;
+      background-repeat: no-repeat;
+      background-position: 9.2% 82.3%, 90.8% 82.3%, center center, center center;
+      border-radius: 50%;
+      border-style: none;
+}
+
+.ring_hum::after {
+      position: absolute;
+      content: '';
+      width: 5%;
+      height: 15%;
+      left: var(--pointerleft);
+      top: var(--pointertop);
+      transform: rotate(var(--pointerdeg));
+      border-style: solid;
+      border-width: 0.5vmin;
+      border-radius: 2vmin;
+      background-color: white;
+}
+
+.value .ring_hum_value {
+      font-size: 12vmin;
+}
+
+/* definition comune aux deux gauges */
+.value {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      text-align: center;
+      color: gray;
+}
+
+.value .units {
+      font-size: 6vmin;
+}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Etat du thermostat</h1>
+        <form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_etat" action="">
+		    <p>&nbsp</p>
+            <div class="form-row align-items-center">
+                <div class="ring_temp" id="ring_temp"">
+                  <div class="value">
+                    <div class="ring_temp_value">21</div>
+                    <div class="units">°C</div>
+                  </div>
+                </div>
+		        <p>&nbsp</p>
+                <div class="ring_hum" id="ring_hum">
+                  <div class="value">
+                    <div class="ring_hum_value">35</div>
+                    <div class="units">%</div>
+                  </div>
+                </div>
+
+            </div>
+        </form>
+	</div>
+
+<!--
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+
+<script>
+    window.onload = function() {        // Function to refresh the table with options
+        console.log('window.load ...');
+        var temp = 0;
+        var humidity = 0;
+
+        // Input : Humidity : 0% to 100%
+        // Return : Angle : degre
+        //
+        // Comment : 0 degre is vertical upper position of cursor
+        // Hum      0    20   50   80    100%
+        // angle  -135  -81   0   +81   +135
+        //  
+        function calculateCursorAngleFromHum(Hum) {
+            angle = ((Hum * 270) / 100) -135;
+            return(angle);
+        }
+
+        // Input : Temperature : degre
+        // Return : Angle : degre
+        //
+        // Comment : 0 degre is vertical upper position of cursor
+        // Temp   -10   0   10   20  30   40    50
+        // angle  -135 -90  -45   0  +45  +90   +135
+        //  
+        function calculateCursorAngleFromTemp(Temp) {
+            angle = (Temp - 20) * 45 / 10;
+            return(angle);
+        }
+
+        //  Input : Temperature : degre
+        // Return : xPos : in % from left ( 0 -> 100)
+        //
+        // Temp  -20   0   10    20   30   40    50
+        // xPos  11%   0   11%   50%       100%
+
+        function calculatexPosFromAngle(angle) {
+            console.log('angle = ' + angle.toString());
+            angle = angle - 90;
+            radians = angle * Math.PI / 180.0
+            xPos = Math.cos(radians);
+            // console.log('xPos = ' + xPos.toString());
+
+            xPos = (xPos * 47) + 47;
+            xPos = Math.round(xPos);
+            console.log('xPos = ' + xPos.toString());
+           return(xPos);
+        }
+
+
+        //  Input : Temperature : degre
+        // Return : yPos : in % from top ( 0 -> 100)
+       function calculateyPosFromAngle(angle) {
+            console.log('angle = ' + angle.toString());
+            angle = angle - 90;
+            radians = angle * Math.PI / 180.0
+            yPos = Math.sin(radians);
+
+            yPos = (yPos * 45) + 41;   // decallage de -5%
+            yPos = Math.round(yPos);
+            console.log('yPos = ' + yPos.toString());
+           return(yPos);
+        }
+
+        function refreshIndex() {
+
+            console.log('refreshIndex ...');
+            temp = temp + 1;
+            if (temp > 50)
+                temp = -10;
+
+            humidity = humidity + 1;
+            if (humidity > 100)
+                humidity = 0;
+
+            //========== Gauge Temp ===================
+            // Fixer la valeur de la gauge de temperature
+            $(".ring_temp_value").text(temp.toString());
+
+            // Positionner le curseur
+            // angle
+            var angle = calculateCursorAngleFromTemp(temp);
+            document.getElementById("ring_temp").style.setProperty('--pointerdeg', angle.toString() + 'deg');
+
+            // xPos
+            xPos = calculatexPosFromAngle(angle);
+            document.getElementById("ring_temp").style.setProperty('--pointerleft', xPos.toString() + '%');
+
+            // yPos
+            yPos = calculateyPosFromAngle(angle);
+            document.getElementById("ring_temp").style.setProperty('--pointertop', yPos.toString() + '%');
+            
+             //========== Gauge Humidity ===============
+            // Fiver la valeur de la gauge d'humidite
+            $(".ring_hum_value").text(humidity.toString());
+
+            // Positionner le curseur
+            // angle
+            angle = calculateCursorAngleFromHum(humidity);
+
+            document.getElementById("ring_hum").style.setProperty('--pointerdeg', angle.toString() + 'deg');
+
+            // xPos
+            xPos = calculatexPosFromAngle(angle);
+            document.getElementById("ring_hum").style.setProperty('--pointerleft', xPos.toString() + '%');
+
+            // yPos
+            yPos = calculateyPosFromAngle(angle);
+            document.getElementById("ring_hum").style.setProperty('--pointertop', yPos.toString() + '%');
+       }
+
+        // Set a timer to refresh the table every 5 seconds (5000 milliseconds)
+        setInterval(refreshIndex, 500);
+ 
+    }
+</script>
+
+</body>
+</html>
+
