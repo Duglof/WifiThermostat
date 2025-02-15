@@ -82,4 +82,22 @@ Sous réserve de tests
 - (4) A décompresser dans le répertoire du disque Arduino/tools qui est situé à côté du répertoire Arduino/libraries (Créer le répertoire tools s'il n'existe pas)
 - (4) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils vous devez avoir 'ESP32 Sketch Data Upload'
 - (5) A décompresser dans le répertoire du disque Arduino/libraries
-- (6) A iinstaller depuis l'Arduino IDE Outils/Gérer les bibliothèques
+- (6) A installer depuis l'Arduino IDE Outils/Gérer les bibliothèques
+
+# Outils à installer (optionnel)
+Pour le debug des exceptions qui apparaitrait dans Outils/Moniteur série
+Cela permet de convertir les valeurs hexadécimales en nom et numéro de ligne du code source
+
+## Installation
+|       Nom     |      Localisation         | Version  |  Nom ou Lien                                                                                           |   Commentaire   | Voir | 
+|---------------|---------------------------|----------|--------------------------------------------------------------------------------------------------------|-----------------|------|
+| Arduino IDE   | Desktop                   | V1.8.18  |                                                                                                        | Pas version 2.x | (1)  |
+| Arduino IDE   | Dossier Arduino/tools     | V2.0.0   | https://github.com/me-no-dev/EspExceptionDecoder/releases/download/2.0.0/EspExceptionDecoder-2.0.0.zip | Pour ESP8266    | (1)  |
+| Arduino IDE   | Dossier Arduino/tools     | V2.0.3   | https://github.com/me-no-dev/EspExceptionDecoder/releases/download/2.0.3/EspExceptionDecoder-2.0.3.zip | Pour ESP32      | (1)  |
+
+- (1) Ne peuvent pas être installés simultanément car il sont dans le même répertoire (c'est l'un ou l'autre)
+
+## Utilisation
+- Il faut absolument compiler votre Croquis (sinon il vous demandera de sélection un fichier elf)
+- Ouvrir le fenêtre Outils/ESP Exception Decoder (qui s'ouvrira sans poser de question)
+- Et coller dans cette fenêtre le message ci-dessus
