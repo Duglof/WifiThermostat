@@ -20,14 +20,14 @@ WifiThermostat for ESP8266 or ESP32
 
 ## Temperature sensors
 
-|   Module       |  Mesures               | Communication |  Value        |   Precision          |   Image         |    Comment     |
-|----------------|------------------------|---------------|---------------|----------------------|-----------------|----------------|
-| BME 280       | Temperature / Humidity  |  I2C ou SPI   | -40 à +85 °C  |                      |                 | Supported      |
-| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C | 12bits / 0,0625°C    |                 | Supported      |
-| -             |                         |               |               |                      |                 |                |
-| BMP 280       |  Temperature Only       |  I2C          |  0 à 65 °C    |                      |                 | Non implémenté |
-| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI   | -40 à +85 °C  | 0,01 ° C             |                 | Non implémenté |
-| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI   |               |                      |                 | Non implémenté |
+|   Module       |  Mesures               | Communication |  Value         |   Precision          |   Image         |    Comment     |
+|----------------|------------------------|---------------|----------------|----------------------|-----------------|----------------|
+| BME 280       | Temperature / Humidity  |  I2C ou SPI   | -40 à +85 °C   |                      |                 | Supported      |
+| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C  | 12bits / 0,0625°C    |                 | Supported      |
+| -             |                         |               |                |                      |                 |                |
+| BMP 280       |  Temperature Only       |  I2C          |  0 à 65 °C     |                      |                 | Non implémenté |
+| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI   | -40 à +85 °C   | 0,01 ° C             |                 | Non implémenté |
+| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI   |                |                      |                 | Non implémenté |
 
 ## Connection
 
