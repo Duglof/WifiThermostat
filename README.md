@@ -23,7 +23,7 @@ WifiThermostat for ESP8266 or ESP32
 |   Module       |  Mesures               | Communication |  Value         |   Precision          |   Image                           |    Comment     |
 |----------------|------------------------|---------------|----------------|----------------------|-----------------------------------|----------------|
 | BME 280       | Temperature / Humidity  |  I2C ou SPI   | -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg) | Supported      |
-| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](sensor-DS18B20.jpg)     | Supported      |
+| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](docs/sensors-DS18B20.jpg)     | Supported      |
 | -             |                         |               |                |                      |                                   |                |
 | BMP 280       |  Temperature Only       |  I2C          |  0 à 65 °C     |                      |                                   | Non implémenté |
 | GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI   | -40 à +85 °C   | 0,01 ° C             |                                   | Non implémenté |
