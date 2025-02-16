@@ -83,6 +83,7 @@ Sous réserve de tests
 | Arduino IDE   | Dossier Arduino/libraries |          | WifiThermostat/librairie/Syslog-master.zip                                                      |                 | (5)  |
 | Arduino IDE   |                           | V2.3.8   | OneWire                                                                                         |                 | (6)  |
 | Arduino IDE   |                           | V4.0.3   | DallasTemperature                                                                               |                 | (6)  |
+| Arduino IDE   |                           | V2.2.4   | Adafruit BME280 Library                                                                         |                 | (6)  |
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
