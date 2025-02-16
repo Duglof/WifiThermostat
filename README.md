@@ -18,6 +18,19 @@ WifiThermostat for ESP8266 or ESP32
 
 # Hardware
 
+## Temperature sensors
+
+|   Module       |  Mesures               | Communication |  Value         |   Precision          |   Image                           |    Comment     |
+|----------------|------------------------|---------------|----------------|----------------------|-----------------------------------|----------------|
+| BME 280       | Temperature / Humidity  |  I2C ou SPI   | -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg) | Supported      |
+| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C  | 12bits / 0,0625°C    |                                   | Supported      |
+| -             |                         |               |                |                      |                                   |                |
+| BMP 280       |  Temperature Only       |  I2C          |  0 à 65 °C     |                      |                                   | Non implémenté |
+| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI   | -40 à +85 °C   | 0,01 ° C             |                                   | Non implémenté |
+| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI   |                |                      |                                   | Non implémenté |
+
+## Connection
+
 |    Module     | Module Pin |  ESP82666 <br> ESP12E/ESP12F | ESP8266 <br> WEMOS D1 Mini| ESP32 <br> ESP32 30 pin |  ESP32 <br> ESP32-C6 Mini |
 |---------------|------------|--------------|---------------|---------------|---------------|
 | HI-LINK       | -Vo        | G            | G            | GND           |  GND          |
@@ -70,6 +83,7 @@ Sous réserve de tests
 | Arduino IDE   | Dossier Arduino/libraries |          | WifiThermostat/librairie/Syslog-master.zip                                                      |                 | (5)  |
 | Arduino IDE   |                           | V2.3.8   | OneWire                                                                                         |                 | (6)  |
 | Arduino IDE   |                           | V4.0.3   | DallasTemperature                                                                               |                 | (6)  |
+| Arduino IDE   |                           | V2.2.4   | Adafruit BME280 Library                                                                         |                 | (6)  |
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
