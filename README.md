@@ -55,7 +55,8 @@ WifiThermostat for ESP8266 or ESP32
 
 - HI-LINK : HLK-PM01 : INPUT 100-240VAC 50-60Hz : OUTPUT 5VDC 3W
 - BME/BMP280 BME 680 : (GND -> GND ; VCC -> 3.3V) 
-- RELAY   : 5V Relay Module (DC- -> -Vo ; DC+ -> +Vo)
+- HTU21              : (GND -> GND ; VCC -> 3.3V) 
+- RELAY              : 5V Relay Module (DC- -> -Vo ; DC+ -> +Vo)
   
 Sous réserve de tests
 
