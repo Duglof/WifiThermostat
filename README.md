@@ -78,6 +78,8 @@ Sous réserve de tests
 
 [esp32-C6](docs/ESP-C6-Mini.png)
 
+[esp32-C6 HTU connections](docs/ESP32-C6-gpio-htu21.jpg)
+
 # Software
 |       Nom     |      Localisation         | Version |  Nom ou Lien                                                                                    |   Commentaire    | Voir | 
 |---------------|---------------------------|---------|-------------------------------------------------------------------------------------------------|------------------|------|
