@@ -92,6 +92,7 @@ Sous réserve de tests
 | Arduino IDE   |                           | V4.0.3  | DallasTemperature                                                                               | only for DS18B20 | (6)  |
 | Arduino IDE   |                           | V2.2.4  | Adafruit BME280 Library                                                                         | only for BME280  | (6)  |
 | Arduino IDE   |                           | V1.1.2  | Adafruit HTU21D                                                                                 | only for HTU21   | (6)  |
+| Arduino IDE   |                           | V1.17.0 | Adafruit BusIO                                                                                  |                  | (6)  |
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
