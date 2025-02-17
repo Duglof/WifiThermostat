@@ -20,19 +20,20 @@ WifiThermostat for ESP8266 or ESP32
 
 ## Temperature sensors
 
-|   Module       |  Mesures               | Communication |  Value         |   Precision          |   Image                           |    Comment     |
-|----------------|------------------------|---------------|----------------|----------------------|-----------------------------------|----------------|
-| BME 280       | Temperature / Humidity  |  I2C ou SPI   | -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg) | Supported      |
-| DS18B20       |  Temperature Only       |  OneWire      | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](sensor-DS18B20.jpg)     | Supported      |
-| -             |                         |               |                |                      |                                   |                |
-| BMP 280       |  Temperature Only       |  I2C          |  0 à 65 °C     |                      |                                   | Non implémenté |
-| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI   | -40 à +85 °C   | 0,01 ° C             |                                   | Non implémenté |
-| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI   |                |                      |                                   | Non implémenté |
+|   Module       |  Mesures               |  Communication   |  Value         |   Precision          |   Image                             |    Comment     |
+|----------------|------------------------|------------------|----------------|----------------------|-------------------------------------|----------------|
+| BME 280       | Temperature / Humidity  | I2C (0x76) ou SPI| -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg)   | Supported      |
+| DS18B20       |  Temperature Only       | OneWire          | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](docs/sensors-DS18B20.jpg) | Supported      |
+| HTU21         | Temperature / Humidity  | I2C (0x40)       | -40˚C à +125˚C | ±0.3˚C at 25°C       |                                     | Supported      |
+| -             |                         |                  |                |                      |                                     |                |
+| BMP 280       |  Temperature Only       |  I2C             |  0 à 65 °C     |                      |                                     | Non implémenté |
+| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI      | -40 à +85 °C   | 0,01 ° C             |                                     | Non implémenté |
+| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI      |                |                      |                                     | Non implémenté |
 
 ## Connection
 
 |    Module     | Module Pin |  ESP82666 <br> ESP12E/ESP12F | ESP8266 <br> WEMOS D1 Mini| ESP32 <br> ESP32 30 pin |  ESP32 <br> ESP32-C6 Mini |
-|---------------|------------|--------------|---------------|---------------|---------------|
+|---------------|------------|--------------|--------------|---------------|---------------|
 | HI-LINK       | -Vo        | G            | G            | GND           |  GND          |
 | HI-LINK       | +Vo        | VIN          | 5V           | VIN           |  +5V          |
 |       -       |            |              |              |               |               |
@@ -45,13 +46,17 @@ WifiThermostat for ESP8266 or ESP32
 | BME 680       | SCK        | GPIO 5 (D1)  | GPIO 5 (D1)  | GPIO 22       | GPIO 23 (D5)  |
 | BME 680       | SDI        | GPIO 4 (D2)  | GPIO 4 (D2)  | GPIO 21       | GPIO 22 (D4)  |
 |      or       |            |              |              |               |               |
+| HTU21         | SCL        | GPIO 5 (D1)  | GPIO 5 (D1)  | GPIO 22       | GPIO 23 (D5)  |
+| HTU21         | SDA        | GPIO 4 (D2)  | GPIO 4 (D2)  | GPIO 21       | GPIO 22 (D4)  |
+|      or       |            |              |              |               |               |
 | DS18B20       |  DQ        | GPIO 4 (D2)  | GPIO 4 (D2)  | GPIO 15       | D10           |
 |               |            |              |              |               |               |
 | RELAY (NO)    |  IN1       | GPIO 12 (D6) | GPIO 12 (D6) | A5 (GPIO 33)  | idem ?        |
 
 - HI-LINK : HLK-PM01 : INPUT 100-240VAC 50-60Hz : OUTPUT 5VDC 3W
 - BME/BMP280 BME 680 : (GND -> GND ; VCC -> 3.3V) 
-- RELAY   : 5V Relay Module (DC- -> -Vo ; DC+ -> +Vo)
+- HTU21              : (GND -> GND ; VCC -> 3.3V) 
+- RELAY              : 5V Relay Module (DC- -> -Vo ; DC+ -> +Vo)
   
 Sous réserve de tests
 
@@ -72,18 +77,19 @@ Sous réserve de tests
 [esp32-C6](docs/ESP-C6-Mini.png)
 
 # Software
-|       Nom     |      Localisation         | Version  |  Nom ou Lien                                                                                    |   Commentaire   | Voir | 
-|---------------|---------------------------|----------|-------------------------------------------------------------------------------------------------|-----------------|------|
-| Arduino IDE   | Desktop                   | V1.8.18  |                                                                                                 | Pas version 2.x | (1)  |
-| Ardiuno IDE   | Fichiers/Préférences      |          | http://arduino.esp8266.com/stable/package_esp8266com_index.json                                 | Pour ESP8266    | (2)  |
-| Ardiuno IDE   | Fichiers/Préférences      |          | https://espressif.github.io/arduino-esp32/package_esp32_index.json                              | Pour ESP32      | (2)  |
-| Arduino IDE   | Dossier Arduino/tools     | V0.5.0   | https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip | Pour ESP8266    | (3)  |
-| Arduino IDE   | Dossier Arduino/tools     | V2.0.7   | https://github.com/lorol/arduino-esp32fs-plugin/releases/download/2.0.7/esp32fs.zip             | Pour ESP32      | (4)  |
-| Arduino IDE   | Dossier Arduino/libraries |          | https://github.com/Pedroalbuquerque/ESP32WebServer                                              | Pour ESP32      | (5)  |
-| Arduino IDE   | Dossier Arduino/libraries |          | WifiThermostat/librairie/Syslog-master.zip                                                      |                 | (5)  |
-| Arduino IDE   |                           | V2.3.8   | OneWire                                                                                         |                 | (6)  |
-| Arduino IDE   |                           | V4.0.3   | DallasTemperature                                                                               |                 | (6)  |
-| Arduino IDE   |                           | V2.2.4   | Adafruit BME280 Library                                                                         |                 | (6)  |
+|       Nom     |      Localisation         | Version |  Nom ou Lien                                                                                    |   Commentaire    | Voir | 
+|---------------|---------------------------|---------|-------------------------------------------------------------------------------------------------|------------------|------|
+| Arduino IDE   | Desktop                   | V1.8.18 |                                                                                                 | Pas version 2.x  | (1)  |
+| Ardiuno IDE   | Fichiers/Préférences      |         | http://arduino.esp8266.com/stable/package_esp8266com_index.json                                 | Pour ESP8266     | (2)  |
+| Ardiuno IDE   | Fichiers/Préférences      |         | https://espressif.github.io/arduino-esp32/package_esp32_index.json                              | Pour ESP32       | (2)  |
+| Arduino IDE   | Dossier Arduino/tools     | V0.5.0  | https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip | Pour ESP8266     | (3)  |
+| Arduino IDE   | Dossier Arduino/tools     | V2.0.7  | https://github.com/lorol/arduino-esp32fs-plugin/releases/download/2.0.7/esp32fs.zip             | Pour ESP32       | (4)  |
+| Arduino IDE   | Dossier Arduino/libraries |         | https://github.com/Pedroalbuquerque/ESP32WebServer                                              | Pour ESP32       | (5)  |
+| Arduino IDE   | Dossier Arduino/libraries |         | WifiThermostat/librairie/Syslog-master.zip                                                      |                  | (5)  |
+| Arduino IDE   |                           | V2.3.8  | OneWire                                                                                         | only for DS18B20 | (6)  |
+| Arduino IDE   |                           | V4.0.3  | DallasTemperature                                                                               | only for DS18B20 | (6)  |
+| Arduino IDE   |                           | V2.2.4  | Adafruit BME280 Library                                                                         | only for BME280  | (6)  |
+| Arduino IDE   |                           | V1.1.2  | Adafruit HTU21D                                                                                 | only for HTU21   | (6)  |
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
@@ -96,6 +102,7 @@ Sous réserve de tests
 - (4) A décompresser dans le répertoire du disque Arduino/tools qui est situé à côté du répertoire Arduino/libraries (Créer le répertoire tools s'il n'existe pas)
 - (4) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils vous devez avoir 'ESP32 Sketch Data Upload'
 - (5) A décompresser dans le répertoire du disque Arduino/libraries
+- (6) A installer que si l'on utilise ce capteur (option de compilation dans WifiTherm.h)
 - (6) A installer depuis l'Arduino IDE Outils/Gérer les bibliothèques
 
 # Outils à installer (optionnel)
