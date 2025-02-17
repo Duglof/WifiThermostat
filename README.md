@@ -63,6 +63,7 @@ Sous réserve de tests
 ## ESP8266 12E/12F
 
 [esp8266 12e 12f](docs/esp12e-gpio.png)
+
 [esp8266 HTU21 connections](docs/ESP12e-gpio-htu21.jpg)
 
 ## ESP8266 WEMOS D1 Mini
