@@ -20,15 +20,15 @@ WifiThermostat for ESP8266 or ESP32
 
 ## Temperature sensors
 
-|   Module       |  Mesures               |  Communication   |  Value         |   Precision          |   Image                                                                              |    Comment     |
-|----------------|------------------------|------------------|----------------|----------------------|--------------------------------------------------------------------------------------|----------------|
-| BME 280       | Temperature / Humidity  | I2C (0x76) ou SPI| -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg)                                                    | Supported      |
-| DS18B20       |  Temperature Only       | OneWire          | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](docs/sensors-DS18B20.jpg)                                                  | Supported      |
-| HTU21         | Temperature / Humidity  | I2C (0x40)       | -40˚C à +125˚C | ±0.3˚C at 25°C       | [HTU21](docs/sensors-HTU-21.jpg) <br> [schematics](docs/sensors-HTU21-schematics.jpg)| Supported      |
-| -             |                         |                  |                |                      |                                                                                      |                |
-| BMP 280       |  Temperature Only       |  I2C             |  0 à 65 °C     |                      |                                                                                      | Non implémenté |
-| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI      | -40 à +85 °C   | 0,01 ° C             |                                                                                      | Non implémenté |
-| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI      |                |                      |                                                                                      | Non implémenté |
+|   Module       |  Mesures               |  Communication   |  Value         |   Precision          |   Image                                                                                |    Comment     |
+|----------------|------------------------|------------------|----------------|----------------------|----------------------------------------------------------------------------------------|----------------|
+| BME 280       | Temperature / Humidity  | I2C (0x76) ou SPI| -40 à +85 °C   |                      | [BME280](docs/sensors-BME280.jpg)<br> [schematics](docs/sensors-BME280-schematics.jpg) | Supported      |
+| DS18B20       |  Temperature Only       | OneWire          | -55 à +125 °C  | 12bits / 0,0625°C    | [DS18B20](docs/sensors-DS18B20.jpg)                                                    | Supported      |
+| HTU21         | Temperature / Humidity  | I2C (0x40)       | -40˚C à +125˚C | ±0.3˚C at 25°C       | [HTU21](docs/sensors-HTU-21.jpg) <br> [schematics](docs/sensors-HTU21-schematics.jpg)  | Supported      |
+| -             |                         |                  |                |                      |                                                                                        |                |
+| BMP 280       |  Temperature Only       |  I2C             |  0 à 65 °C     |                      |                                                                                        | Non implémenté |
+| GY-BME/BMP280 | Temp / Hum / Barometric |  I2C et SPI      | -40 à +85 °C   | 0,01 ° C             |                                                                                        | Non implémenté |
+| BME 680       | Temp/Hum/Baro/gaz       |  I2C et SPI      |                |                      |                                                                                        | Non implémenté |
 
 ## Connection
 
