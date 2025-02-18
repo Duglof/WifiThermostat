@@ -70,6 +70,8 @@ Sous réserve de tests
 
 [Wemos D1 Mini](docs/WEMOS-D1-Mini.jpg)
 
+[Wemos D1 Mini BME280 connections](docs/WEMOS-D1-Mini-gpio-bme280.jpg)
+
 ## ESP32 30 Pins
 
 [esp32 gpio](docs/ESP32-dev-kit-30pins-pinout.png)
