@@ -66,6 +66,8 @@ Sous réserve de tests
 
 [esp8266 HTU21 connections](docs/ESP12e-gpio-htu21.jpg)
 
+[esp8266 DS18B20 connections](docs/ESP12e-gpio-ds18b20.jpg)
+
 ## ESP8266 WEMOS D1 Mini
 
 [Wemos D1 Mini](docs/WEMOS-D1-Mini.jpg)
