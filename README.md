@@ -124,6 +124,10 @@ Sous réserve de tests
 
 ![Etat du thermostat](docs/web-thermostat-state.jpg)
 
+## Données du système
+
+![Données du système](docs/web-thermostat-system.jpg)
+
 ## Programme de chauffage
 
 ![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
