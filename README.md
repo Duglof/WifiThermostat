@@ -124,6 +124,10 @@ Sous réserve de tests
 
 ![Etat du thermostat](docs/web-thermostat-state.jpg)
 
+## Programme de chauffage
+
+![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
+
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
 
