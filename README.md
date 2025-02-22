@@ -118,6 +118,12 @@ Sous réserve de tests
 - (6) A installer que si l'on utilise ce capteur (option de compilation dans WifiTherm.h)
 - (6) A installer depuis l'Arduino IDE Outils/Gérer les bibliothèques
 
+# Web interface
+
+## Etat du thermostat
+
+![Etat du thermostat](docs/web-thermostat-state.jpg)
+
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
 
