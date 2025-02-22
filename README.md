@@ -49,7 +49,7 @@ WifiThermostat for ESP8266 or ESP32
 | HTU21             | SCL        | GPIO 5 (D1)  | GPIO 5 (D1)  | GPIO 22 (D22) | GPIO 23 (D5)  |
 | HTU21             | SDA        | GPIO 4 (D2)  | GPIO 4 (D2)  | GPIO 21 (D21) | GPIO 22 (D4)  |
 |      or           |            |              |              |               |               |
-| DS18B20           |  DQ        | GPIO 4 (D2)  | GPIO 4 (D2)  | GPIO 15 (D15) | D10           |
+| DS18B20           |  DQ        | GPIO 13(D7)  | GPIO 13 (D7) | GPIO 15 (D15) | D10           |
 |                   |            |              |              |               |               |
 | RELAY (NO)        | IN1        | GPIO 12 (D6) | GPIO 12 (D6) | A5 (GPIO 33)  | idem ?        |
 | RUF RELAY N°2     | IN1        | GPIO 14 (D5) | GPIO 14 (D5) |               |               |
