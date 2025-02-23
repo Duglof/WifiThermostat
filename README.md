@@ -133,6 +133,10 @@ Sous réserve de tests
 
 ![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
 
+## Fichiers du système
+
+![Fichiers du système](docs/web-thermostat-files.jpg)
+
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
 
