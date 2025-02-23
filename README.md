@@ -106,7 +106,7 @@ Sous réserve de tests
 
 - (1) ESP8266 et ESP32 Skech Data Upload ne fonctionnent pas sur version 2.x
 - (2) Ajouter les deux même si vous ne l'utilisez pas
-- (2) Séparer les lien pas une virgule
+- (2) Séparer les liens pas une virgule
 - (2) Ne pas oublier d'aller dans le gestionnaire de cartes et d'installer : esp8266 by ESP8266 community v3.1.2
 - (2) Ne pas oublier d'aller dans le gestionnaire de cartes et d'installer : esp32 by Espressif Systems v3.1.1
 - (2) Après avoir relancé Arduino IDE vous devriez avoir dans le menu Outils/Type de carte 'ESP8266 Boards (3.1.2)' et 'ESP32 Arduino'
