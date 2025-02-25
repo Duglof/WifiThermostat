@@ -7,6 +7,7 @@ WifiThermostat for ESP8266 or ESP32
 - Données stockées dans le système de fichier LittleFS 
 - Configuration du réseau Wifi en se connectant au thermostat avec un téléphone mobile
 - Paramétrage de la Time zone pour avoir la bonne heure
+  - Paris : CET-1CEST,M3.5.0,M10.5.0/3
 - Gestion automatique de l'heure été/hiver via la Time Zone configurée
 - Paramètrage du serveur de temps (ntp)
 - 28 plages horaires au total
