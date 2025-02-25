@@ -20,6 +20,7 @@ WifiThermostat for ESP8266 or ESP32
   - Une plage peut être affectée du Lundi au Vendredi
   - Une plage peut être affectée au Week End
   - Pour un plage on coche les jours concernés
+- Si aucune plage ne correspond, c'est la température par défaut qui est utilisée
 - Envoi possible des données à un serveur MQTT
 - Envoi possible d'un requète http
 - Mise à jour via OTA (Wifi) 
