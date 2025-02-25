@@ -125,7 +125,13 @@ Sous réserve de tests
 
 ## Etat du thermostat
 
-![Etat du thermostat](docs/web-thermostat-state.jpg)
+### Français en °C celsius
+
+![Etat du thermostat Fr](docs/web-thermostat-state-fr.jpg)
+
+### Anglais en °F fahrenheit
+
+![Etat du thermostat en](docs/web-thermostat-state-en.jpg)
 
 ## Données du système
 
