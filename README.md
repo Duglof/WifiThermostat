@@ -6,8 +6,12 @@ WifiThermostat for ESP8266 or ESP32
 - Support °C ou °F (celsius ou fahrenheit)
 - Données stockées dans le système de fichier LittleFS 
 - Configuration du réseau Wifi en se connectant au thermostat avec un téléphone mobile
-- Paramétrage de la Time zone pour avoir la bonne heure
-  - Paris : CET-1CEST,M3.5.0,M10.5.0/3
+- Paramétrage de la Time zone pour avoir la bonne heure : exemples
+  - Paris DST : "CET-1CEST,M3.5.0,M10.5.0/3"
+  - British DST : "GMT0BST,M3.5.0/01,M10.5.0/02"
+  - Eastern Standard Time : "EST5EDT,M3.2.0/2,M11.1.0"
+  - Indian Standard Time : "UTC-05:30"
+  - China Standard Time : "CST-8CDT-8,M4.2.0/2,M9.2.0/3"
 - Gestion automatique de l'heure été/hiver via la Time Zone configurée
 - Paramètrage du serveur de temps (ntp)
 - 28 plages horaires au total
