@@ -62,6 +62,8 @@ WifiThermostat for ESP8266 or ESP32
 |                   |            |              |              |               |               |
 | RELAY (NO)        | IN1        | GPIO 12 (D6) | GPIO 12 (D6) | A5 (GPIO 33)  | idem ?        |
 | RUF RELAY N°2     | IN1        | GPIO 14 (D5) | GPIO 14 (D5) |               |               |
+|                   |            |              |              |               |               |
+| LED INTERNE       |            | GPIO 2 (D4) <br> blue| GPIO 2 (D4) <br> blue| GPIO 2 (D2) <br>blue | GPIO 8 (D8) <br> rgb led |
 
 - HI-LINK : HLK-PM01 : INPUT 100-240VAC 50-60Hz : OUTPUT 5VDC 3W
 - BME/BMP280 BME 680 : (GND -> GND ; VCC -> 3.3V) 
