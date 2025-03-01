@@ -41,7 +41,7 @@ WifiThermostat for ESP8266 or ESP32
 
 ## Connection
 
-|    Module         | Module Pin |  ESP82666 <br> ESP12E/ESP12F | ESP8266 <br> WEMOS D1 Mini| ESP32 <br> ESP32 30 pin |  ESP32 <br> ESP32-C6 Mini |
+|    Module         | Module Pin |  ESP82666 <br> ESP12E/ESP12F | ESP8266 <br> WEMOS D1 Mini| ESP32 <br> ESP32 30 pin |  ESP32 Mini <br> ESP32-C6 14 pin |
 |-------------------|------------|--------------|--------------|---------------|---------------|
 | HI-LINK           | -Vo        | G            | G            | GND           |  GND          |
 | HI-LINK           | +Vo        | VIN          | 5V           | VIN           |  +5V          |
@@ -61,7 +61,7 @@ WifiThermostat for ESP8266 or ESP32
 | DS18B20           |  DQ        | GPIO 13 (D7) | GPIO 13 (D7) | GPIO 15 (D15) | GPIO 15 (D15) |
 |                   |            |              |              |               |               |
 | RELAY (NO)        | IN1        | GPIO 12 (D6) | GPIO 12 (D6) | A5 (GPIO 33)  | idem ?        |
-| RUF RELAY N°2     | IN1        | GPIO 14 (D5) | GPIO 14 (D5) |               |               |
+| RUF RELAY N°2     | IN1        | GPIO 14 (D5) | GPIO 14 (D5) |               | GPIO 14 select<br> built-in antenna |
 |                   |            |              |              |               |               |
 | LED INTERNE       |            | GPIO 2 (D4) <br> blue| GPIO 2 (D4) <br> blue| GPIO 2 (D2) <br>blue | GPIO 8 (D8) <br> rgb led |
 
