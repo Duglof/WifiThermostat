@@ -149,6 +149,24 @@ Sous réserve de tests
 
 ![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
 
+## Configuration
+
+### Wifi
+
+![Config Wifi](docs/web-thermostat-config-wifi-fr.png)
+
+### Thermostat
+![Config Thermostat](docs/web-thermostat-config-thermostat-fr.png)
+
+### Mqtt
+![Config Mqtt](docs/web-thermostat-config-mqtt-fr.png)
+
+### Jeedom
+![Config Jeedom](docs/web-thermostat-config-jeedom-fr.png)
+
+### Avancée
+![Config avancée](docs/web-thermostat-config-avancee-fr.png)
+
 ## Fichiers du système
 
 ![Fichiers du système](docs/web-thermostat-files.jpg)
