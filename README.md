@@ -142,7 +142,7 @@ Sous réserve de tests
 ## Données du système
 ![Données du système](docs/web-thermostat-system.jpg)
 
-## Programme de chauffage
+## Programme de chauffage (28 plages)
 ![Programme de chauufage](docs/web-thermostat-prog-heat.png)
 
 ## Configuration
