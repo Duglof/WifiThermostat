@@ -143,7 +143,7 @@ Sous réserve de tests
 ![Données du système](docs/web-thermostat-system.jpg)
 
 ## Programme de chauffage
-![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
+![Programme de chauufage](docs/web-thermostat-prog-heat.png)
 
 ## Configuration
 
