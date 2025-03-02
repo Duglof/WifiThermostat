@@ -1,0 +1,2234 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Programme de Chauffage</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-table.min.css" rel="stylesheet">
+
+	<style>
+		.form-label-center {
+			text-align: center;
+			display: block;
+			width: 100%;
+		}
+
+		.label-auto-width {
+			display: inline-block;
+			width: auto;
+		}
+
+		.input-temp {
+			max-width: 10ch;
+		}
+
+		.input-heure {
+			width: 9ch;
+			-- width: auto;
+		}
+
+		// style for checkbox : begin
+		.checkbox-label {
+			display: inline-block;
+			cursor: pointer;
+			position: relative;
+			margin-right: 10px; /* Space between checkboxes */
+		}
+
+		.checkbox-label input[type="checkbox"] {
+			display: none;
+		}
+
+		.checkbox-label span {
+			color: grey;
+			font-size: 16px;
+			transition: color 0.3s, text-decoration 0.3s;
+			text-decoration: line-through; /* Strikethrough when unchecked */
+		}
+
+		.checkbox-label input[type="checkbox"]:checked ~ span {
+			color: blue; /* Change to your desired color */
+			text-decoration: none; /* Remove strikethrough when checked */
+		}
+
+		.tooltip {
+			visibility: hidden;
+			width: 120px;
+			background-color: blue;
+			color: #fff;
+			text-align: center;
+			border-radius: 5px;
+			padding: 5px;
+			position: absolute;
+			z-index: 1;
+			bottom: 125%; /* Position above the letter */
+			left: 50%;
+			margin-left: -60px;
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
+
+		.checkbox-label:hover .tooltip {
+			visibility: visible;
+			opacity: 1;
+		}
+		/* style for checkbox : end */
+
+    /* unites celsius fahrenheit */
+    .temp-unit { display: none; }
+    .temp-unit.active { display: block; }
+
+    /* lang-content fr en */
+    .lang-content { display: none; }
+    .lang-content.active { display: block; }
+
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand lang-content fr" href="index.htm">Etat</a>
+		<a class="navbar-brand lang-content en active" href="index.htm">Status</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="system.htm">Système</a>
+					<a class="nav-link lang-content en active" href="system.htm">System</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="prog_heat.htm">Programme de chauffage</a>
+					<a class="nav-link lang-content en active" href="prog_heat.htm">Heat program</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="setup.htm">Configuration</a>
+					<a class="nav-link lang-content en active" href="setup.htm">Setup</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="files.htm">Fichiers</a>
+					<a class="nav-link lang-content en active" href="files.htm">Files</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container mt-5">
+		<div class="form">
+			<div class="form-body">
+				<h1 class= "lang-content fr">Programme de Chauffage</h1>
+				<h1 class= "lang-content en active">Heating program</h1>
+				<form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_prog_heat" action="">
+					<div class="form-row align-items-center">
+						<div class="col-md-4">
+							<label for="prog_heat_default" class="lang-content fr">Température par défaut :</label>
+							<label for="prog_heat_default" class="lang-content en active">Default temperature :</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.1" class="form-control" id="prog_heat_default" name="prog_heat_default" required>
+								<div class="input-group-append">
+           						    <span class="input-group-text temp-unit celsius active">°C</span>
+           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<p>&nbsp</p>
+					<table 	class="table table-striped table-condensed" id="tab_prog_heat">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th data-field="na" data-align="left">
+                				    <span class="lang-content fr">Jours</span>
+                				    <span class="lang-content en active">Days</span>
+                                </th>
+								<th data-field="va" data-align="left">
+                				    <span class="lang-content fr">Valeurs</span>
+                				    <span class="lang-content en active">Values</span>
+                                </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">#0</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p0_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p0_temperature" name="p0_temperature">
+										        <div class="input-group-append">
+                       						        <span class="input-group-text temp-unit celsius active">°C</span>
+                       						        <span class="input-group-text temp-unit fahrenheit">°F</span>
+	        								    </div>
+                                            </div>
+                                        </div>
+									    <label for="p0_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p0_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+           										<input type="text" class="form-control input-heure timepicker" id="p0_time_d" name="p0_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p0_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p0_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+    									        <input type="text" class="form-control input-heure timepicker" id="p0_time_f" name="p0_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#1</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p1_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p1_temperature" name="p1_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p1_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p1_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p1_time_d" name="p1_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p1_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p1_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p1_time_f" name="p1_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#2</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p2_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p2_temperature" name="p2_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p2_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p2_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+	            								<input type="text" class="form-control input-heure timepicker" id="p2_time_d" name="p2_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p2_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p2_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p2_time_f" name="p2_time_f">
+									        </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#3</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p3_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p3_temperature" name="p3_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p3_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p3_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p3_time_d" name="p3_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p3_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p3_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p3_time_f" name="p3_time_f">
+									        </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#4</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p4_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p4_temperature" name="p4_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p4_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p4_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p4_time_d" name="p4_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p4_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p4_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p4_time_f" name="p4_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#5</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p5_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p5_temperature" name="p5_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p5_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p5_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p5_time_d" name="p5_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p5_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p5_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p5_time_f" name="p5_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#6</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p6_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p6_temperature" name="p6_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p6_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p6_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p6_time_d" name="p6_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p6_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p6_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p6_time_f" name="p6_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#7</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p7_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p7_temperature" name="p7_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p7_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p7_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p7_time_d" name="p7_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p7_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p7_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p7_time_f" name="p7_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#8</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p8_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p8_temperature" name="p8_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p8_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p8_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p8_time_d" name="p8_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p8_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p8_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p8_time_f" name="p8_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#9</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p9_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p9_temperature" name="p9_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p9_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p9_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p9_time_d" name="p9_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p9_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p9_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p9_time_f" name="p9_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#10</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p10_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p10_temperature" name="p10_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p10_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p10_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p10_time_d" name="p10_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p10_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p10_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p10_time_f" name="p10_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#11</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p11_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p11_temperature" name="p11_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p11_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p11_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p11_time_d" name="p11_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p11_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p11_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p11_time_f" name="p11_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#12</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p12_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p12_temperature" name="p12_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p12_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p12_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p12_time_d" name="p12_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p12_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p12_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p12_time_f" name="p12_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#13</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p13_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p13_temperature" name="p13_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p13_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p13_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p13_time_d" name="p13_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p13_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p13_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p13_time_f" name="p13_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#14</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p14_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p14_temperature" name="p14_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p14_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p14_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p14_time_d" name="p14_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p14_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p14_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p14_time_f" name="p14_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#15</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p15_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p15_temperature" name="p15_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p15_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p15_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p15_time_d" name="p15_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p15_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p15_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p15_time_f" name="p15_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#16</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p16_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p16_temperature" name="p16_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p16_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p16_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p16_time_d" name="p16_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p16_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p16_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p16_time_f" name="p16_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#17</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p17_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p17_temperature" name="p17_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p17_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p17_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p17_time_d" name="p17_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p17_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p17_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p17_time_f" name="p17_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#18</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p18_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p18_temperature" name="p18_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p18_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p18_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p18_time_d" name="p18_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p18_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p18_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p18_time_f" name="p18_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#19</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p19_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p19_temperature" name="p19_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p19_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p19_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p19_time_d" name="p19_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p19_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p19_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p19_time_f" name="p19_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#20</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p20_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p20_temperature" name="p20_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p20_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p20_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p20_time_d" name="p20_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p20_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p20_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p20_time_f" name="p20_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#21</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p21_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p21_temperature" name="p21_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p21_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p21_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p21_time_d" name="p21_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p21_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p21_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p21_time_f" name="p21_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#22</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p22_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p22_temperature" name="p22_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p22_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p22_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p22_time_d" name="p22_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p22_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p22_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p22_time_f" name="p22_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#23</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p23_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p23_temperature" name="p23_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p23_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p23_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p23_time_d" name="p23_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p23_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p23_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p23_time_f" name="p23_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#24</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p24_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p24_temperature" name="p24_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p24_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p24_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p24_time_d" name="p24_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p24_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p24_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p24_time_f" name="p24_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#25</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p25_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p25_temperature" name="p25_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p25_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p25_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p25_time_d" name="p25_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p25_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p25_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p25_time_f" name="p25_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#26</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p26_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p26_temperature" name="p26_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p26_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p26_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p26_time_d" name="p26_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p26_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p26_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p26_time_f" name="p26_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+							<tr>
+								<th scope="row">#27</th>
+								<th>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_0">
+										<span class="lang-content fr">Di</span>
+										<span class="lang-content en active">Su</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_1">
+										<span class="lang-content fr">Lu</span>
+										<span class="lang-content en active">Mo</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_2">
+										<span class="lang-content fr">Ma</span>
+										<span class="lang-content en active">Tu</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_3">
+										<span class="lang-content fr">Me</span>
+										<span class="lang-content en active">We</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_4">
+										<span class="lang-content fr">Je</span>
+										<span class="lang-content en active">Th</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_5">
+										<span class="lang-content fr">Ve</span>
+										<span class="lang-content en active">Fr</span>
+									</label>
+									<label class="checkbox-label">
+										<input type="checkbox" id="p27_wday_6">
+										<span class="lang-content fr">Sa</span>
+										<span class="lang-content en active">Sa</span>
+									</label>
+								</th>
+								<th>
+                                    <div class="row">
+                                        <div class="col-md-3">
+									        <div class="input-group">
+										        <input type="number" step="0.1" class="form-control input-temp" id="p27_temperature" name="p27_temperature">
+										        <div class="input-group-append">
+                           						    <span class="input-group-text temp-unit celsius active">°C</span>
+                           						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+										        </div>
+                                            </div>
+                                        </div>
+         							    <label for="p27_time_d" class="label-auto-width lang-content fr">&nbspde :&nbsp</label>
+									    <label for="p27_time_d" class="label-auto-width lang-content en active">&nbspfrom :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p27_time_d" name="p27_time_d">
+                                            </div>
+                                        </div>
+									    <label for="p27_time_f" class="label-auto-width lang-content fr">&nbspà :&nbsp</label>
+									    <label for="p27_time_f" class="label-auto-width lang-content en active">&nbspto :&nbsp</label>
+                                        <div class="col-md-3">
+									        <div class="input-group">
+            									<input type="text" class="form-control input-heure timepicker" id="p27_time_f" name="p27_time_f">
+                                            </div>
+                                        </div>
+                                    </div>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+					<div class="form-footer">
+						<div class="text-center">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-default btn-success">Enregistrer</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="alert alert-success" role="alert">
+					<span id="alert-message"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+-->
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+<script src="js/bootstrap-table.min.js"></script>
+<script src="js/jquery-clock-timepicker.js"></script>     <!-- https://github.com/loebi-ch/jquery-clock-timepicker/tree/master V2.6.4 -->
+
+<script>
+    // Show the html element 
+    // according to the brower language
+    // and hide the others
+    //
+    // class name : 'lang-content fr' for french
+    //              'lang-content en' for english
+    //     
+    // lang : 'fr' or 'en'
+    function showContentLang(lang) {
+        var contents = document.getElementsByClassName('lang-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(lang);
+        for (var i = 0; i < langContents.length; i++) {
+            // On ne touche pas aux <option> des <select>
+            if (contents[i].nodeName.toLowerCase() !== "option")
+                langContents[i].classList.add('active');
+        }
+
+        // Traittement de tous les selects
+        var selectElements = document.querySelectorAll('select');
+        console.log(selectElements);
+        selectElements.forEach(select => {
+            console.log(`Options for select with id: ${select.id}`);
+            Array.from(select.options).forEach(option => {
+                console.log(option.value, option.text);
+                if (option.classList.contains(lang)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                    // it's necessary to remove duplicate value in the select because even with display none
+                    // the first value is selected when you set the value of the select
+                    option.value = "x";
+                }
+            });
+        });
+    }
+
+    function showContentUnit(unit) {
+        var contents = document.getElementsByClassName('temp-unit');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(unit);
+        for (var i = 0; i < langContents.length; i++) {
+            langContents[i].classList.add('active');
+        }
+    }
+
+	// type : success, warning, danger
+	function showAlertMessage(message, type, delay) {
+		document.getElementById('alert-message').innerHTML = message;
+
+		var modalContent = document.querySelector('#alertModal .alert');
+			modalContent.className = 'alert alert-' + type; // Update modal style based on alert type
+
+			$('#alertModal').modal('show');
+			setTimeout(function() {
+				$('#alertModal').modal('hide');
+			}, delay); // 3000ms = 3 seconds delay before closing
+		}
+
+
+		// https://stackoverflow.com/questions/41431322/how-to-convert-formdata-html5-object-to-json
+		// Convert FormElement to JSON
+		// var jsonData = FormDataToJSON(document.getElementById('FormId'));
+		function FormDataToJSON(form){    
+			var ConvertedJSON= {};
+			// for (const [key, value]  of formData.entries())
+			var allFormControls = form.elements;
+			for (var i = 0, n = allFormControls.length; i < n; ++i) {
+				if ( allFormControls[i].nodeName.toLowerCase() === "input" )  {
+					var el = allFormControls[i];
+					if ( (el.type === "number") || (el.type === "text") ) {
+						console.log('get el.id ' + el.id + ',el.value = ' + el.value);
+						ConvertedJSON[el.id] = el.value;
+					} else if ( el.type === "checkbox" ) {
+						console.log('get el.id ' + el.id + ',el.checked = ' + el.checked);
+						ConvertedJSON[el.id] = el.checked;
+					} else {
+						console.warn(' erreur: ' + el.id + ' type ' + el.type + 'non traité');  
+					}
+				}
+			}
+			return ConvertedJSON
+		}
+
+		window.onload = function() {
+			console.log('window.onload');
+
+			$.getJSON( "/prog_heat.json", function(json_data) {
+                // console.log('json_data = ' + json_data);
+				var form = document.getElementById( 'frm_prog_heat' );
+				var allFormControls = form.elements;
+                // console.log('nb form controls = ' + allFormControls.length);
+				for (var i = 0, n = allFormControls.length; i < n; ++i) {
+					if ( allFormControls[i].nodeName.toLowerCase() === "input") {
+						var el = allFormControls[i];
+                        // console.log('search for el.id = ' + el.id);
+						if (json_data.hasOwnProperty(el.id)) {
+							console.log("set el.id " + el.id);
+							if ( (el.type === "number") || (el.type === "text") ) {
+                                // console.log("set number or time to " + json_data[el.id]);
+								el.value = json_data[el.id];
+							} else if (el.type === "checkbox") {
+                                // console.log("set checkbox to " + json_data[el.id]);
+								if (json_data[el.id] == "true")
+									el.checked = true;
+								else
+									el.checked = false;
+							} else {
+								console.warn(' erreur: ' + el.id + ' type ' + el.type + 'non traité');  
+							}
+						} else {
+							console.warn(' erreur: ' + el.id + ' inexistant dans /prog_heat.json');  
+						}
+					}
+				}
+                therm_unit = json_data["therm_unit"];
+                console.log('therm_unit = ' + therm_unit)
+                showContentUnit(json_data["therm_unit"])
+			})
+			.fail(function() { console.log( "error while getting /prog_heat.json" );	})
+
+            // Retrieve the user's preferred language
+            var userLang = navigator.userLanguage || navigator.language; 
+
+            console.log("User's preferred language is: " + userLang);
+
+            // Switch to french if brower prefered language is 'fr-??'
+            // else stay in english
+            if (userLang.startsWith('fr'))
+                showContentLang('fr');
+
+		}
+
+		$('#frm_prog_heat').on('submit', function (event) {
+			// everything looks good!
+			if (!event.isDefaultPrevented()) {
+				event.preventDefault();
+				console.log("Form Submit");
+
+				var jsonData = FormDataToJSON(document.getElementById('frm_prog_heat'));
+				console.log(jsonData);
+
+				$.post('/prog_heat_form.json', jsonData)
+				.done( function(msg, textStatus, xhr) { 
+						showAlertMessage('Enregistrement effectué', 'success', 3000); // 3000ms = 3 seconds delay
+					})
+				.fail( function(xhr, textStatus, errorThrown) {
+						showAlertMessage('Erreur lors de l\'enregistrement', 'warning', 3000); // 3000ms = 3 seconds delay
+					}
+					);
+			}
+		});
+
+        // See https://github.com/loebi-ch/jquery-clock-timepicker/blob/master/README.md for options
+
+        $('.timepicker').clockTimePicker();
+
+	</script>
+
+</body>
+</html>
+

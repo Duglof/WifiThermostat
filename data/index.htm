@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Status</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-table.min.css" rel="stylesheet">
+    <script>
+        var temp_value = "";
+        var humidity_value = "";
+    </script>
+	<style>
+.form-label-center {
+	text-align: center;
+	display: block;
+	width: 100%;
+}
+
+/*
+    style pour chart temperature
+    From : https://stackoverflow.com/questions/67235098/how-to-create-semi-circle-ellipse-with-html-css-like-a-gauge-speedometer
+*/
+
+/* gauge temperture */
+.ring_temp {
+      position: relative;
+      --pointerleft: 11%;
+      --pointertop: 11%;
+      --pointerdeg: -45deg;
+      width: 50vmin;
+      height: 50vmin;
+      background-image: radial-gradient(gold 0, gold 50%, transparent 50%, transparent 100%), radial-gradient(red 0, red 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(orange 0, red 130deg, white 130deg, white 230deg, gold 230deg, orange 360deg);
+      background-size: 11% 11%, 11% 11%, 100% 100%, 100% 100%;
+      background-repeat: no-repeat;
+      background-position: 9.2% 82.3%, 90.8% 82.3%, center center, center center;
+      border-radius: 50%;
+      border-style: none;
+}
+
+.ring_temp::after {
+      position: absolute;
+      content: '';
+      width: 5%;
+      height: 15%;
+      left: var(--pointerleft);
+      top: var(--pointertop);
+      transform: rotate(var(--pointerdeg));
+      border-style: solid;
+      border-width: 0.5vmin;
+      border-radius: 2vmin;
+      background-color: white;
+}
+
+.value .ring_temp_value {
+      font-size: 12vmin;
+}
+
+/* gauge humidity */
+.ring_hum {
+      position: relative;
+      --pointerleft: 11%;
+      --pointertop: 11%;
+      --pointerdeg: -45deg;
+      width: 50vmin;
+      height: 50vmin;
+      background-image: radial-gradient(lightblue 0, lightblue 50%, transparent 50%, transparent 100%), radial-gradient(blue 0, blue 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(DodgerBlue 0, blue 130deg, white 130deg, white 230deg, lightblue 230deg, DodgerBlue 360deg);
+      background-size: 11% 11%, 11% 11%, 100% 100%, 100% 100%;
+      background-repeat: no-repeat;
+      background-position: 9.2% 82.3%, 90.8% 82.3%, center center, center center;
+      border-radius: 50%;
+      border-style: none;
+}
+
+.ring_hum::after {
+      position: absolute;
+      content: '';
+      width: 5%;
+      height: 15%;
+      left: var(--pointerleft);
+      top: var(--pointertop);
+      transform: rotate(var(--pointerdeg));
+      border-style: solid;
+      border-width: 0.5vmin;
+      border-radius: 2vmin;
+      background-color: white;
+}
+
+.value .ring_hum_value {
+      font-size: 12vmin;
+}
+
+/* definition comune aux deux gauges */
+.value {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      text-align: center;
+      color: gray;
+}
+
+.value .units {
+      font-size: 6vmin;
+}
+
+/* unites celsius fahrenheit */
+.temp-unit { display: none; }
+.temp-unit.active { display: block; }
+
+/* lang-content fr en */
+.lang-content { display: none; }
+.lang-content.active { display: block; }
+
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand lang-content fr" href="index.htm">Etat</a>
+		<a class="navbar-brand lang-content en active" href="index.htm">Status</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="system.htm">Système</a>
+					<a class="nav-link lang-content en active" href="system.htm">System</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="prog_heat.htm">Programme de chauffage</a>
+					<a class="nav-link lang-content en active" href="prog_heat.htm">Heat program</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="setup.htm">Configuration</a>
+					<a class="nav-link lang-content en active" href="setup.htm">Setup</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="files.htm">Fichiers</a>
+					<a class="nav-link lang-content en active" href="files.htm">Files</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<h1 class= "lang-content fr">Etat du thermostat</h1>
+		<h1 class= "lang-content en active">Thermostat status</h1>
+        <form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_etat" action="">
+		    <div class="form-row align-items-center">
+			    <div class="col-md-2">
+				    <label class="form-label" for="date">Date :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <input type="text" class="form-control" id="date" name="date" value="27/01/1970 22:59:59" disabled>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label">&nbsp</label>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label lang-content fr" for="adresse_ip">Adresse IP :</label>
+				    <label class="form-label lang-content en active" for="adresse_ip">IP adress :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <input type="text" class="form-control" id="adresse_ip" name="adresse_ip" value="192.168.1.XX" disabled>
+			    </div>
+		    </div>
+		    <div class="form-row align-items-center">
+			    <div class="col-md-2">
+				    <label class="form-label lang-content fr" for="jour">Jour :</label>
+				    <label class="form-label lang-content en active" for="jour">Day :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <div class="input-group">
+					    <input type="text" class="form-control lang-content fr" id="jour_fr" name="jour_fr" disabled>
+					    <input type="text" class="form-control lang-content en active" id="jour_en" name="jour_en" disabled>
+				    </div>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label">&nbsp</label>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label lang-content fr" for="adresse_ip">Nom réseau :</label>
+				    <label class="form-label lang-content en active" for="adresse_ip">Host name :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <input type="text" class="form-control" id="host" name="host" disabled>
+			    </div>
+		    </div>
+		    <p>&nbsp</p>
+		    <div class="form-row align-items-center">
+			    <div class="col-md-2">
+				    <label class="form-label lang-content fr" for="temperature">Température :</label>
+				    <label class="form-label lang-content en active" for="temperature">Temperature :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <div class="input-group">
+					    <input type="number" class="form-control" step="0.1" id="temperature" name="temperature" value="" disabled>
+					    <div class="input-group-append">
+   						    <span class="input-group-text temp-unit celsius active">°C</span>
+   						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+					    </div>
+				    </div>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label">&nbsp</label>
+			    </div>
+			    <div class="col-md-2">
+				    <label class="form-label lang-content fr" for="humidity">Humidité :</label>
+				    <label class="form-label lang-content en active" for="humidity">Humidity :</label>
+			    </div>
+			    <div class="col-md-2">
+				    <div class="input-group">
+					    <input type="number" class="form-control" id="humidity" name="humidity" value="" disabled>
+					    <div class="input-group-append">
+						    <span class="input-group-text">%</span>
+					    </div>
+				    </div>
+			    </div>
+		    </div>
+
+		    <p>&nbsp</p>
+            <div class="form-row align-items-center">
+                <div class="ring_temp" id="ring_temp">
+                  <div class="value">
+                    <div class="ring_temp_value">21</div>
+                    <div class="units temp-unit celsius active">°C</div>
+                    <div class="units temp-unit fahrenheit">°F</div>
+                  </div>
+                </div>
+		        <p>&nbsp</p>
+                <div class="ring_hum" id="ring_hum">
+                  <div class="value">
+                    <div class="ring_hum_value">35</div>
+                    <div class="units">%</div>
+                  </div>
+                </div>
+            </div>
+	        <div class="form-row align-items-center">
+                <div class="col-md-2">
+					<label class="form-label lang-content fr" for="term_mode">Mode :</label>
+					<label class="form-label lang-content en active" for="term_mode">Mod :</label>
+                </div>
+				<div class="col-md-4">
+					<select id="term_mode" name="term_mode" class="form-control col-md-8" disabled>
+						<option class="fr" style="display: none;" value="0">⚫ OFF</option>
+						<option class="fr" style="display: none;" value="1">🟢 HORSGEL</option>
+						<option class="fr" style="display: none;" value="2">🔴 CHAUFFAGE</option>
+						<option class="fr" style="display: none;" value="3">🔵 CLIMATISATION</option>
+						<option class="en" style="display: block;" value="0">⚫ OFF</option>
+						<option class="en" style="display: block;" value="1">🟢 ANTIFROST</option>
+						<option class="en" style="display: block;" value="2">🔴 HEAT</option>
+						<option class="en" style="display: block;" value="3">🔵 COOL</option>    
+					</select>
+				</div>
+                <div class="col-md-2">
+					<label class="form-label lang-content fr" for="term_config">Configuration :</label>
+					<label class="form-label lang-content en active" for="term_config">Config :</label>
+                </div>
+			    <div class="col-md-4">
+    			    <div class="input-group">
+						<select id="term_config" name="term_config" class="form-control col-md-6" disabled>
+							<option class="fr" style="display: none;" value="0">🔒 MANUEL</option>
+							<option class="fr" style="display: none;" value="1">⏰ PROGRAMME</option>
+					        <option class="en" style="display: block;" value="0">🔒 MANUAL</option>
+					        <option class="en" style="display: block;" value="1">⏰ PROGRAM</option>
+				        </select>
+				        <div class="input-group-append">
+ 					        <input class="input-group-text col-md-3" type="text" maxlength="4" id="prog_item" name="prog_item" value="   " disabled>
+				        </div>
+				    </div>
+                </div>
+            </div>
+	        <div class="form-row align-items-center">
+		        <div class="col-md-2">
+			        <label class="form-label lang-content fr" for="consigne">Consigne :</label>
+			        <label class="form-label lang-content en active" for="consigne">Target temperature :</label>
+		        </div>
+		        <div class="col-md-2">
+			        <div class="input-group">
+				        <input type="number" class="form-control" step="0.1" id="consigne" name="consigne" value="19.0" disabled>
+				        <div class="input-group-append">
+   						    <span class="input-group-text temp-unit celsius active">°C</span>
+   						    <span class="input-group-text temp-unit fahrenheit">°F</span>
+				        </div>
+			        </div>
+		        </div>
+		        <div class="col-md-2">
+			        <label class="form-label">&nbsp</label>
+		        </div>
+	            <div class="col-md-2">
+		            <label class="form-label lang-content fr" for="relay">Etat du relais :</label>
+		            <label class="form-label lang-content en active" for="relay">Relay status :</label>
+	            </div>
+	            <div class="col-md-2">
+		            <div class="input-group">
+			            <input type="test" class="form-control" id="relay" name="relay" value="OFF" disabled>
+		            </div>
+	            </div>
+	        </div>
+        </form>
+	</div>
+
+<!--
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+-->
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+
+<script>
+    // Show the html element 
+    // according to the brower language
+    // and hide the others
+    //
+    // class name : 'lang-content fr' for french
+    //              'lang-content en' for english
+    //     
+    // lang : 'fr' or 'en'
+    function showContentLang(lang) {
+        var contents = document.getElementsByClassName('lang-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(lang);
+        for (var i = 0; i < langContents.length; i++) {
+            // On ne touche pas aux <option> des <select>
+            if (contents[i].nodeName.toLowerCase() !== "option")
+                langContents[i].classList.add('active');
+        }
+
+        // Traittement de tous les selects
+        var selectElements = document.querySelectorAll('select');
+        console.log(selectElements);
+        selectElements.forEach(select => {
+            console.log(`Options for select with id: ${select.id}`);
+            Array.from(select.options).forEach(option => {
+                console.log(option.value, option.text);
+                if (option.classList.contains(lang)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                    // it's necessary to remove duplicate value in the select because even with display none
+                    // the first value is selected when you set the value of the select
+                    option.value = "x";
+                }
+            });
+        });
+    }
+
+    // Show the html element 
+    // according to the temperature unit
+    // and hide the other
+    //
+    // class name : 'temp-unit celsius' for celsius
+    //              'temp-unit fahrenheit' for fahrenheit
+    //     
+    // unit : 'celsius' or 'fahrenheit'
+    function showContentUnit(unit) {
+        var contents = document.getElementsByClassName('temp-unit');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(unit);
+        for (var i = 0; i < langContents.length; i++) {
+            langContents[i].classList.add('active');
+        }
+    }
+
+    // Input : Humidity : 0% to 100%
+    // Return : Angle : degre
+    //
+    // Comment : 0 degre is vertical upper position of cursor
+    // Hum      0    20   50   80    100%
+    // angle  -135  -81   0   +81   +135
+    //  
+    function calculateCursorAngleFromHum(Hum) {
+        angle = ((Hum * 270) / 100) -135;
+        return(angle);
+    }
+
+    // Input : Temperature : degre
+    // Return : Angle : degre
+    //
+    // Comment : 0 degre is vertical upper position of cursor
+    // Temp   -10   0   10   20  30   40    50
+    // angle  -135 -90  -45   0  +45  +90   +135
+    //  
+    function calculateCursorAngleFromTemp(Temp) {
+        angle = (Temp - 20) * 45 / 10;
+        return(angle);
+    }
+
+    //  Input : Temperature : degre
+    // Return : xPos : in % from left ( 0 -> 100)
+    //
+    // Temp  -20   0   10    20   30   40    50
+    // xPos  11%   0   11%   50%       100%
+
+    function calculatexPosFromAngle(angle) {
+        // console.log('angle = ' + angle.toString());
+        angle = angle - 90;
+        radians = angle * Math.PI / 180.0
+        xPos = Math.cos(radians);
+        // console.log('xPos = ' + xPos.toString());
+
+        xPos = (xPos * 47) + 47;
+        xPos = Math.round(xPos);
+        console.log('xPos (%) = ' + xPos.toString());
+       return(xPos);
+    }
+
+
+    //  Input : Temperature : degre
+    // Return : yPos : in % from top ( 0 -> 100)
+   function calculateyPosFromAngle(angle) {
+        // console.log('angle = ' + angle.toString());
+        angle = angle - 90;
+        radians = angle * Math.PI / 180.0
+        yPos = Math.sin(radians);
+
+        yPos = (yPos * 45) + 41;   // decallage de -5%
+        yPos = Math.round(yPos);
+        console.log('yPos (%) = ' + yPos.toString());
+       return(yPos);
+    }
+
+    function refreshIndex() {
+
+        console.log('refreshIndex ...');
+
+		$.getJSON( "/tinfo.json", function(json_data) {
+            // console.log('json_data = ' + json_data);
+
+			var form = document.getElementById( 'frm_etat' );
+			var allFormControls = form.elements;
+			// console.log(allFormControls);
+
+			// Parcours tous les éléments de la form
+			// S'il ont le nom "input"
+			//   On récupère l'id
+			//   On fixe la valeur à la valeur du json ayant le même id
+			for (var i = 0, n = allFormControls.length; i < n; ++i) {
+				if ( (allFormControls[i].nodeName.toLowerCase() === "input" ) || 
+                     (allFormControls[i].nodeName.toLowerCase() === "select") ) {
+					var el = allFormControls[i];
+					// console.log(el.id);
+					// el.value = "toto";
+					if (json_data.hasOwnProperty(el.id)) {
+						el.value = json_data[el.id];
+                        console.log('set el.id ' + el.id + ',el.value = ' + el.value);
+					} else {
+						console.warn(' erreur: ' + el.id + ' inexistant dans /tinfo.json');  
+					}
+				}
+			}
+            // Récupérer la valeur de la temperature
+            temp_value = json_data['temperature'];
+            console.log('temp = ' + temp_value);
+
+            // Récuperer la valeur de l'humidité
+            humidity_value = json_data['humidity'];
+
+            //========== Gauge Temp ===================
+            // Fixer la valeur de la gauge de temperature
+            $(".ring_temp_value").text(temp_value);
+
+            // Positionner le curseur
+            // angle
+            therm_unit = json_data["therm_unit"];
+            if ( therm_unit === "celsius")
+                angle = calculateCursorAngleFromTemp(parseInt(temp_value));
+            else
+                angle = calculateCursorAngleFromTemp((parseInt(temp_value) - 32) * 5 / 9 );
+
+            document.getElementById("ring_temp").style.setProperty('--pointerdeg', angle.toString() + 'deg');
+
+            // xPos
+            xPos = calculatexPosFromAngle(angle);
+            document.getElementById("ring_temp").style.setProperty('--pointerleft', xPos.toString() + '%');
+
+            // yPos
+            yPos = calculateyPosFromAngle(angle);
+            document.getElementById("ring_temp").style.setProperty('--pointertop', yPos.toString() + '%');
+
+            //========== Gauge Humidity ===============
+            // Fiver la valeur de la gauge d'humidite
+            $(".ring_hum_value").text(humidity_value);
+
+            // Positionner le curseur
+            // angle
+            angle = calculateCursorAngleFromHum(parseInt(humidity_value));
+
+            document.getElementById("ring_hum").style.setProperty('--pointerdeg', angle.toString() + 'deg');
+
+            // xPos
+            xPos = calculatexPosFromAngle(angle);
+            document.getElementById("ring_hum").style.setProperty('--pointerleft', xPos.toString() + '%');
+
+            // yPos
+            yPos = calculateyPosFromAngle(angle);
+            document.getElementById("ring_hum").style.setProperty('--pointertop', yPos.toString() + '%');
+
+            therm_unit = json_data["therm_unit"];
+            console.log('therm_unit = ' + therm_unit)
+            showContentUnit(json_data["therm_unit"])
+
+        })
+		.fail(function() { console.log( "error while getting /tinfo.json" );	})
+
+    }
+
+    // hide prog_num in manual mode
+    document.getElementById('term_config').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        var textSpan = document.getElementById('prog_num');
+        
+        textSpan.classList.add('hidden');
+       
+        console.log('selectedValue = ' + selectedValue);
+
+        if (selectedValue === '1') {
+            textSpan.classList.remove('hidden');
+        }
+    });
+
+    // hide prog_num in manual mode
+    document.getElementById('term_config').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        var textSpan = document.getElementById('prog_num');
+       
+        // console.log('textSpan = ' + textSpan);
+        // console.log('selectedValue = ' + selectedValue);
+
+        if (selectedValue === '1') {
+            textSpan.removeAttribute('hidden');
+            // textSpan.value = ('   ');
+            // this.style.width = 3 + 'ch';
+        } else {
+            textSpan.setAttribute('hidden', true);
+        }
+    });
+
+
+    window.onload = function() {        // Function to refresh the table with options
+        console.log('window.load ...');
+
+        // Retrieve the user's preferred language
+        var userLang = navigator.userLanguage || navigator.language; 
+
+        console.log("User's preferred language is: " + userLang);
+
+        // Switch to french if brower prefered language is 'fr-??'
+        // else stay in english
+        if (userLang.startsWith('fr'))
+            showContentLang('fr');
+ 
+        // refresh immediate
+        refreshIndex();
+
+        // Set a timer to refresh every 2 seconds (2000 milliseconds)
+        setInterval(refreshIndex, 2000);
+
+    }
+</script>
+
+</body>
+</html>
+

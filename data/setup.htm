@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Setup</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-table.min.css" rel="stylesheet">
+	<style>
+
+/* for select option */
+.hidden-option {
+	display: none;
+}
+.option-text {
+	display: inline-block;
+	vertical-align: middle;
+}
+.option-icon {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+
+/* unites celsius fahrenheit */
+.temp-unit { display: none; }
+.temp-unit.active { display: block; }
+
+/* lang-content fr en */
+.lang-content { display: none; }
+.lang-content.active { display: block; }
+
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand lang-content fr" href="index.htm">Etat</a>
+		<a class="navbar-brand lang-content en active" href="index.htm">Status</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="system.htm">Système</a>
+					<a class="nav-link lang-content en active" href="system.htm">System</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="prog_heat.htm">Programme de chauffage</a>
+					<a class="nav-link lang-content en active" href="prog_heat.htm">Heat program</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="setup.htm">Configuration</a>
+					<a class="nav-link lang-content en active" href="setup.htm">Setup</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="files.htm">Fichiers</a>
+					<a class="nav-link lang-content en active" href="files.htm">Files</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<h1 class= "lang-content fr">Configuration</h1>
+		<h1 class= "lang-content en active">Setup</h1>
+		<form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_config" action="">
+			<input type="hidden" name="save" value="1">
+			<div class="form-group">
+				<label for= "ssid" class="col-sm-3 control-label lang-content fr">Nom réseau Wifi (SSID)</label>
+				<label for= "ssid" class="col-sm-3 control-label lang-content en active">Wifi network Name (SSID)</label>
+				<div class="col-sm-9">
+					<div class="input-group">
+						<input type="text" class="form-control" id="ssid" name="ssid" maxlength="32" value="" placeholder="Nom de votre réseau Wifi">
+						<div class="input-group-btn">
+							<button class="btn btn-default" type="button" id="btn_scan" data-bs-toggle="modal" data-bs-target="#tab_scan">&nbsp;🔍</span></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="psk" class="col-sm-3 control-label lang-content fr">Mot de passe Wifi</label>
+				<label for="psk" class="col-sm-3 control-label lang-content en active">Wifi password</label>
+				<div class="col-sm-9">
+					<input type="password" class="form-control" id="psk" name="psk" maxlength="64" value="" placeholder="Clé de votre réseau Wifi">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="host" class="col-sm-3 control-label lang-content fr">Nom réseau</label>
+				<label for="host" class="col-sm-3 control-label lang-content en active">Hostname</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" id="host" name="host" maxlength="32" value="" placeholder="Nom réseau Wifi">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="ntp_server" class="col-sm-3 control-label lang-content fr">Serveur de temps (NTP)</label>
+				<label for="ntp_server" class="col-sm-3 control-label lang-content en active">Time server (NTP)</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" id="ntp_server" name="ntp_server" maxlength="32" value="" placeholder="Nom du serveur NTP">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="tz" class="col-sm-3 control-label lang-content fr">Fuseau horaire (TZ)</label>
+				<label for="tz" class="col-sm-3 control-label lang-content en active">Time Zone (TZ)</label>
+				<div class="col-sm-9">
+					<!-- Voir https://github.com/nayarsystems/posix_tz_db -->
+					<input type="text" class="form-control" id="tz" name="tz" maxlength="32" value="" placeholder="CET-1CEST,M3.5.0,M10.5.0/3">
+				</div>
+			</div>
+			<div class="panel-footer">
+				<div class="text-center">
+					<div class="btn-group">
+						<button type="submit" class="btn btn-default btn-success">
+							<span class="lang-content fr">Enregistrer</span>
+							<span class="lang-content en active">Save</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container mt-5">
+			<p>
+				<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panneau_thermostat" aria-expanded="false" aria-controls="panneau">Thermostat »</button>
+			</p>
+			<div class="collapse" id="panneau_thermostat">
+				<div class="panel-body">
+					<div class="form-row align-items-center">
+						<div class="col-md-4">
+							<label for="term_hyteresis" class="control-label lang-content fr">Hystérésis :</label>
+							<label for="term_hyteresis" class="control-label lang-content en active">Hysteresis :</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.1" min="0.1" max="2" class="form-control" id="term_hyteresis" name="term_hyteresis" value="0.5" required>
+								<div class="input-group-append">
+									<span class="input-group-text temp-unit celsius active">°C</span>
+									<span class="input-group-text temp-unit fahrenheit">°F</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<div class="col-md-4">
+							<label for="term_temphorsgel" class="control-label lang-content fr">Température HorsGel :</label>
+							<label for="term_temphorsgel" class="control-label lang-content en active">Frost Protection Temperature :</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.1" class="form-control" id="term_temphorsgel" name="term_temphorsgel" value="5.0" required>
+								<div class="input-group-append">
+									<span class="input-group-text temp-unit celsius active">°C</span>
+									<span class="input-group-text temp-unit fahrenheit">°F</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<label for="term_mode" class="col-md-4 control-label lang-content fr">Mode de fonctionnement :</label>
+						<label for="term_mode" class="col-md-4 control-label lang-content en active">Operating mode :</label>
+						<div class="col-md-4">
+							<select id="term_mode" name="term_mode" class="form-control col-md-8">
+								<option class="fr" style="display: none;" value="0">⚫ OFF</option>
+								<option class="fr" style="display: none;" value="1">🟢 HORSGEL</option>
+								<option class="fr" style="display: none;" value="2">🔴 CHAUFFAGE</option>
+								<option class="fr" style="display: none;" value="3">🔵 CLIMATISATION</option>
+								<option class="en" style="display: block;" value="0">⚫ OFF</option>
+								<option class="en" style="display: block;" value="1">🟢 ANTIFROST</option>
+								<option class="en" style="display: block;" value="2">🔴 HEAT</option>
+								<option class="en" style="display: block;" value="3">🔵 COOL</option>    
+							</select>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<label for="term_config" class="col-md-4 control-label lang-content fr">Fonctionnement :</label>
+						<label for="term_config" class="col-md-4 control-label lang-content en active">Functioning :</label>
+						<div class="col-md-4">
+							<select id="term_config" name="term_config" class="form-control col-md-8">
+								<option class="fr" style="display: none;" value="0">🔒 MANUEL</option>
+								<option class="fr" style="display: none;" value="1">⏰ PROGRAMME</option>
+								<option class="en" style="display: block;" value="0">🔒 MANUAL</option>
+								<option class="en" style="display: block;" value="1">⏰ PROGRAM</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<div class="col-md-4">
+							<label for="term_tempmanu_heat" class="lang-content fr">Consigne de chauffage en mode manuel</label>
+							<label for="term_tempmanu_heat" class="lang-content en active">Heating setpoint in manual mode</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.1" class="form-control" id="term_tempmanu_heat" name="term_tempmanu_heat" value="17.0" required>
+								<div class="input-group-append">
+									<span class="input-group-text temp-unit celsius active">°C</span>
+									<span class="input-group-text temp-unit fahrenheit">°F</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<div class="col-md-4">
+							<label for="term_tempmanu_cool" class="lang-content fr">Consigne de climatisation en mode manuel</label>
+							<label for="term_tempmanu_cool" class="lang-content en active">Cooling setpoint in manual mode</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.1" class="form-control" id="term_tempmanu_cool" name="term_tempmanu_cool" value="22.0" required>
+								<div class="input-group-append">
+									<span class="input-group-text temp-unit celsius active">°C</span>
+									<span class="input-group-text temp-unit fahrenheit">°F</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-row align-items-center">
+						<label class="col-md-4">Affichage degrés</label>
+						<div class="col-md-4">
+							<label class="radio-inline"><input type="radio" id="therm_unit_celsius"    name="therm_unit" value="0">Celsius (°C)</label>
+							<label class="radio-inline"><input type="radio" id="therm_unit_fahrenheit" name="therm_unit" value="1">Fahrenheit (°F)</label>
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button class="btn btn-warning" id="btn_test_relay">
+								<span class="lang-content fr">Test relais</span>
+								<span class="lang-content en active">Relay test</span>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">
+								<span class="lang-content fr">Enregistrer</span>
+								<span class="lang-content en active">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container mt-5">
+			<p>
+				<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panneau_mqtt" aria-expanded="false" aria-controls="panneau">Mqtt »</button>
+			</p>
+			<div class="collapse" id="panneau_mqtt">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="mqtt_host" class="col-sm-3 control-label lang-content fr">Nom du serveur mqtt (ou IP)</label>
+						<label for="mqtt_host" class="col-sm-3 control-label lang-content en active">Mqtt serveur name (or IP)</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="mqtt_host" name="mqtt_host" maxlength="32" placeholder="Serveur ou IP v4">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="mqtt_port" class="col-sm-3 control-label lang-content fr">Port mqtt</label>
+						<label for="mqtt_port" class="col-sm-3 control-label lang-content en active">Mqtt port</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="mqtt_port" name="mqtt_port" maxlength="32" placeholder="1883">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="mqtt_user" class="col-sm-3 control-label lang-content fr">Nom utilisateur</label>
+						<label for="mqtt_user" class="col-sm-3 control-label lang-content en active">Username</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="mqtt_user" name="mqtt_user" maxlength="32" placeholder="user">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="mqtt_pswd" class="col-sm-3 control-label lang-content fr">Mot de passe</label>
+						<label for="mqtt_pswd" class="col-sm-3 control-label lang-content en active">Password</label>
+						<div class="col-sm-9">
+							<input type="password" class="form-control" id="mqtt_pswd" name="mqtt_pswd" maxlength="64" value="" placeholder="password">
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="mqtt_freq" class="col-sm-3 control-label lang-content fr">Mise à jour</label>
+						<label for="mqtt_freq" class="col-sm-3 control-label lang-content en active">Update</label>
+						<div class="col-sm-9">
+							<select id="mqtt_freq" name="mqtt_freq" class="form-control col-sm-4">
+								<option class="fr" style="display: none;" value="0">désactivée</option>
+								<option class="fr" style="display: none;" value="15">toutes les 15 secondes</option>
+								<option class="fr" style="display: none;" value="30">toutes les 30 secondes</option>
+								<option class="fr" style="display: none;" value="60">toutes les minutes</option>
+								<option class="fr" style="display: none;" value="300">toutes les 5 minutes</option>
+								<option class="fr" style="display: none;" value="900">tous les 1/4 d"heure</option>
+								<option class="fr" style="display: none;" value="1800">toutes les 1/2 heure</option>
+								<option class="fr" style="display: none;" value="3600">toutes les heures</option>
+								<option class="fr" style="display: none;" value="21600">toutes les 6 heures</option>
+								<option class="fr" style="display: none;" value="42300">toutes les 12 heures</option>
+								<option class="fr" style="display: none;" value="86400">tous les jours</option>
+								<option class="en" style="display: block;" value="0">disable</option>
+								<option class="en" style="display: block;" value="15">every 15 seconds</option>
+								<option class="en" style="display: block;" value="30">every 30 seconds</option>
+								<option class="en" style="display: block;" value="60">every minuts</option>
+								<option class="en" style="display: block;" value="300">every 5 minuts</option>
+								<option class="en" style="display: block;" value="900">every 1/4 of hour</option>
+								<option class="en" style="display: block;" value="1800">every 1/2 hour</option>
+								<option class="en" style="display: block;" value="3600">every hour</option>
+								<option class="en" style="display: block;" value="21600">every 6 hours</option>
+								<option class="en" style="display: block;" value="42300">every 12 hours</option>
+								<option class="en" style="display: block;" value="86400">every day</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="mqtt_topic" class="col-sm-3 control-label lang-content fr">Topic de base</label>
+						<label for="mqtt_topic" class="col-sm-3 control-label lang-content en active">Base topic</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="mqtt_topic" name="mqtt_topic" maxlength="32" placeholder="TIC">
+						</div>
+					</div>
+				</div> <!-- panel-body --> 
+				<div class="panel-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">
+								<span class="lang-content fr">Enregistrer</span>
+								<span class="lang-content en active">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div> <!-- collapse -->
+
+		</div> <!-- container mt-5 -->
+
+		<div class="container mt-5">
+			<p>
+				<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panneau_jeedom" aria-expanded="false" aria-controls="panneau">Jeedom »</button>
+			</p>
+			<div class="collapse" id="panneau_jeedom">
+				<div class="panel-body">
+
+					<div class="form-group">
+						<label for="jdom_host" class="col-sm-3 control-label lang-content fr">Nom du serveur Jeedom (ou IP)</label>
+						<label for="jdom_host" class="col-sm-3 control-label lang-content en active">Jeedom server name (or IP)</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="jdom_host" name="jdom_host" maxlength="32" placeholder="Serveur ou IP v4">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="jdom_port" class="col-sm-3 control-label lang-content fr">Port Jeedom</label>
+						<label for="jdom_port" class="col-sm-3 control-label lang-content en active">Jeedom port</label>
+						<div class="col-sm-9">
+							<select id="jdom_port" name="jdom_port" class="form-control col-sm-2">
+								<option class="fr" style="display: none;" value="80">http (80)</option>
+								<option class="fr" style="display: none;" value="443">https (443)</option>
+								<option class="en" style="display: block;" value="80">http (80)</option>
+								<option class="en" style="display: block;" value="443">https (443)</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="jdom_url" class="col-sm-3 control-label lang-content fr">URL</label>
+						<label for="jdom_url" class="col-sm-3 control-label lang-content en active">URL</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="jdom_url" name="jdom_url" maxlength="64" placeholder="Url">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="jdom_apikey" class="col-sm-3 control-label lang-content fr">Clé API</label>
+						<label for="jdom_apikey" class="col-sm-3 control-label lang-content en active">API key</label>
+						<div class="col-sm-9">
+							<input type="password" class="form-control" id="jdom_apikey" name="jdom_apikey" maxlength="64" value="" placeholder="API Key">
+							<span class="help-block lang-content fr">Clé API du plugin destinataire (pas celle du core)</span>
+							<span class="help-block lang-content en active">API key of the recipient plugin (not that of the core)</span>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="jdom_freq" class="col-sm-3 control-label lang-content fr">Mise à jour</label>
+						<label for="jdom_freq" class="col-sm-3 control-label lang-content en active">Update</label>
+						<div class="col-sm-9">
+							<select id="jdom_freq" name="jdom_freq" class="form-control col-sm-4">
+								<option class="fr" style="display: none;" value="0">désactivée</option>
+								<option class="fr" style="display: none;" value="15">toutes les 15 secondes</option>
+								<option class="fr" style="display: none;" value="30">toutes les 30 secondes</option>
+								<option class="fr" style="display: none;" value="60">toutes les minutes</option>
+								<option class="fr" style="display: none;" value="300">toutes les 5 minutes</option>
+								<option class="fr" style="display: none;" value="900">tous les 1/4 d"heure</option>
+								<option class="fr" style="display: none;" value="1800">toutes les 1/2 heure</option>
+								<option class="fr" style="display: none;" value="3600">toutes les heures</option>
+								<option class="fr" style="display: none;" value="21600">toutes les 6 heures</option>
+								<option class="fr" style="display: none;" value="42300">toutes les 12 heures</option>
+								<option class="fr" style="display: none;" value="86400">tous les jours</option>
+								<option class="en" style="display: block;" value="0">disable</option>
+								<option class="en" style="display: block;" value="15">every 15 seconds</option>
+								<option class="en" style="display: block;" value="30">every 30 seconds</option>
+								<option class="en" style="display: block;" value="60">every minuts</option>
+								<option class="en" style="display: block;" value="300">every 5 minuts</option>
+								<option class="en" style="display: block;" value="900">every 1/4 of hour</option>
+								<option class="en" style="display: block;" value="1800">every 1/2 hour</option>
+								<option class="en" style="display: block;" value="3600">every hour</option>
+								<option class="en" style="display: block;" value="21600">every 6 hours</option>
+								<option class="en" style="display: block;" value="42300">every 12 hours</option>
+								<option class="en" style="display: block;" value="86400">every day</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="jdom_plugin" class="col-sm-3 control-label lang-content fr">Plugin destinataire</label>
+						<label for="jdom_plugin" class="col-sm-3 control-label lang-content en active">Receiver Plugin</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="jdom_plugin" name="jdom_plugin" maxlength="32" placeholder="httpRemoteEvent">
+							<span class="help-block lang-content fr">Nom du plugin destinataire de la requête</span>
+							<span class="help-block lang-content en active">Name of the plugin which receives the request</span>
+						</div>
+					</div>
+				</div> <!-- panel-body --> 
+				<div class="panel-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">
+								<span class="lang-content fr">Enregistrer</span>
+								<span class="lang-content en active">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div> <!-- collapse -->
+
+		</div> <!-- container mt-5 -->
+
+		<div class="container mt-5">
+			<p>
+				<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panneau_httpreq" aria-expanded="false" aria-controls="panneau">Http request »</button>
+			</p>
+			<div class="collapse" id="panneau_httpreq">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="httpreq_host" class="col-sm-3 control-label lang-content fr">Serveur (ou IP)</label>
+						<label for="httpreq_host" class="col-sm-3 control-label lang-content en active">Server name (or IP)</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="httpreq_host" name="httpreq_host" maxlength="32" placeholder="Hostname">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="httpreq_port" class="col-sm-3 control-label lang-content fr">Port</label>
+						<label for="httpreq_port" class="col-sm-3 control-label lang-content en active">Port</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="httpreq_port" name="httpreq_port" maxlength="5" placeholder="Port">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="httpreq_path" class="col-sm-3 control-label lang-content fr">Url</label>
+						<label for="httpreq_path" class="col-sm-3 control-label lang-content en active">Url</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="httpreq_path" name="httpreq_path" maxlength="150" placeholder="Path">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="httpreq_freq" class="col-sm-3 control-label lang-content fr">Mise à jour</label>
+						<label for="httpreq_freq" class="col-sm-3 control-label lang-content en active">Update</label>
+						<div class="col-sm-9">
+							<select id="httpreq_freq" name="httpreq_freq" class="form-control col-sm-4">
+								<option class="fr" style="display: none;" value="0">désactivée</option>
+								<option class="fr" style="display: none;" value="15">toutes les 15 secondes</option>
+								<option class="fr" style="display: none;" value="30">toutes les 30 secondes</option>
+								<option class="fr" style="display: none;" value="60">toutes les minutes</option>
+								<option class="fr" style="display: none;" value="300">toutes les 5 minutes</option>
+								<option class="fr" style="display: none;" value="900">tous les 1/4 d"heure</option>
+								<option class="fr" style="display: none;" value="1800">toutes les 1/2 heure</option>
+								<option class="fr" style="display: none;" value="3600">toutes les heures</option>
+								<option class="fr" style="display: none;" value="21600">toutes les 6 heures</option>
+								<option class="fr" style="display: none;" value="42300">toutes les 12 heures</option>
+								<option class="fr" style="display: none;" value="86400">tous les jours</option>
+								<option class="en" style="display: block;" value="0">disable</option>
+								<option class="en" style="display: block;" value="15">every 15 seconds</option>
+								<option class="en" style="display: block;" value="30">every 30 seconds</option>
+								<option class="en" style="display: block;" value="60">every minuts</option>
+								<option class="en" style="display: block;" value="300">every 5 minuts</option>
+								<option class="en" style="display: block;" value="900">every 1/4 of hour</option>
+								<option class="en" style="display: block;" value="1800">every 1/2 hour</option>
+								<option class="en" style="display: block;" value="3600">every hour</option>
+								<option class="en" style="display: block;" value="21600">every 6 hours</option>
+								<option class="en" style="display: block;" value="42300">every 12 hours</option>
+								<option class="en" style="display: block;" value="86400">every day</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="httpreq_swidx" class="col-sm-3 control-label lang-content fr">Switch IDX</label>
+						<label for="httpreq_swidx" class="col-sm-3 control-label lang-content en active">Switch IDX</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="httpreq_swidx" name="httpreq_swidx" maxlength="5" placeholder="Laisser vide si inutilisé">
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">
+								<span class="lang-content fr">Enregistrer</span>
+								<span class="lang-content en active">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div> <!-- collapse -->
+		</div> <!-- container mt-5 -->
+
+
+		<div class="container mt-5">
+			<p>
+				<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panneau_avance" aria-expanded="false" aria-controls="panneau">
+					<span class="lang-content fr">Avancée »</span>
+					<span class="lang-content en active">Advanced »</span>
+				</button>
+			</p>
+			<div class="collapse" id="panneau_avance">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="ap_psk" class="col-sm-3 control-label lang-content fr">Mot de passe en mode AP</label>
+						<label for="ap_psk" class="col-sm-3 control-label lang-content en active">Password in AP mode</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="ap_psk" name="ap_psk" maxlength="64" value="" placeholder="Laisser vide pour un point d'accès ouvert">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="ota_auth" class="col-sm-3 control-label lang-content fr">Mot de passe OTA</label>
+						<label for="ota_auth" class="col-sm-3 control-label lang-content en active">OTA password</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="ota_auth" name="ota_auth" placeholder="Mot de passe OTA">
+							<span class="help-block lang-content fr">Laisser vide pour désactiver l"authentification par mot de passe pour les mise à jour</span>
+							<span class="help-block lang-content en active">Leave blank to disable password authentication for updates</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="ota_port" class="col-sm-3 control-label lang-content fr">Port OTA</label>
+						<label for="ota_port" class="col-sm-3 control-label lang-content en active">OTA Port</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control" id="ota_port" name="ota_port" size="5" min="1024" max="65534" placeholder="Port OTA">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="syslog_host" class="col-sm-3 control-label lang-content fr">Serveur Rsyslog (IP ou Nom DNS)</label>
+						<label for="syslog_host" class="col-sm-3 control-label lang-content en active">Rsyslog server (IP or DNS name)</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="syslog_host" name="syslog_host" maxlength="32" placeholder="server.domain.local">
+							<span class="help-block lang-content fr">Laisser vide pour désactiver l"envoi des messages Debug vers serveur syslog</span>
+							<span class="help-block lang-content en active">Leave blank to disable sending Debug messages to syslog server</span>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<label for="syslog_port" class="col-sm-3 control-label lang-content fr">Port Rsyslog</label>
+						<label for="syslog_port" class="col-sm-3 control-label lang-content en active">Rsyslog port</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="syslog_port" name="syslog_port" maxlength="5" placeholder="514">
+						</div>
+					</div>
+
+				</div>
+
+				<div class="panel-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button type="button" class="btn btn-danger" id="btn_reboot">
+								<span class="lang-content fr">Redémarrer WifiThermostat</span>
+								<span class="lang-content en active">Restart WifiThermostat</span>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-raz">
+								<span class="lang-content fr">RAZ Usine</span>
+								<span class="lang-content en active">Factory reset</span>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">
+								<span class="lang-content fr">Enregistrer</span>
+								<span class="lang-content en active">Save</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form> <!-- config form -->
+
+	<!-- Modal Confirm -->
+	<div class="modal fade" id="confirm-raz" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title lang-content fr" id="myModalLabel">Confirmer la Remise à Zéro</h4>
+					<h4 class="modal-title lang-content en active" id="myModalLabel">Confirm Reset</h4>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span class="lang-content fr">
+						<p>Vous allez effectuer un remise à zéro du module WifiThermostat</p>
+						<p>Cette procédure est irreversible et vous allez effacer tous les paramètres de configuration</p>
+						<p>Vous allez supprimer les paramètres de connexion à votre réseau Wifi</p>
+						<p></p>
+						<p>Voulez-vous vraiment continuer ?</p>
+						<p></p>
+					</span>
+					<span class="lang-content en active">
+						<p>You are going to reset the WifiThermostat module</p>
+						<p>This procedure is irreversible and you will erase all configuration settings</p>
+						<p>You will delete the connection settings to your Wifi network</p>
+						<p></p>
+						<p>Do you really want to continue ?</p>
+						<p></p>
+					</span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<span class="lang-content fr">Annuler</span>
+						<span class="lang-content en active">Cancel</span>
+					</button>
+					<button type="button" class="btn btn-primary" id="btn_reset">
+						<span class="lang-content fr">Oui tout effacer</span>
+						<span class="lang-content en active">Yes erase all</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div> <!-- Modal Confirm -->
+
+	<!-- Modal Wifi Scan -->
+	<div class="modal fade" id="tab_scan" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title lang-content fr">Liste des réseaux Wifi</h4>
+					<h4 class="modal-title lang-content en active">List of WiFi networks</h4>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table 	id="tab_scan_data" class="table" data-toggle="table" data-cache="false" data-sort-name="rssi" data-sort-order="desc" data-show-refresh="true" data-show-loading="true">
+						<thead>
+							<tr>
+								<th class="col-sm-5" data-field="ssid" data-sortable="true">SSID</th>
+								<th class="col-sm-4" data-field="signal" data-align="center" data-formatter="RSSIFormatter">
+									<span class="lang-content fr">Qualité</span>
+									<span class="lang-content en active">Quality</span>
+								</th>
+								<th class="col-sm-3" data-field="rssi" data-sortable="true" data-sort-order="asc" data-align="center">RSSI (dBm)</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<span class="lang-content fr">Annuler</span>
+						<span class="lang-content en active">Cancel</span>
+					</button>
+				</div>
+			</div> 
+		</div> 
+	</div> <!-- modal Wifi Scan -->
+
+	<!-- Modal Reboot -->
+	<div class="modal fade" id="mdl_wait" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title lang-content fr">Redémarrage WifiThermostat en cours</h4>
+					<h4 class="modal-title lang-content en active">WifiThermostat restart in progress</h4>
+				</div>
+				<div class="modal-body">
+					<p class="text-center" id="txt_srv"></p>
+					<p class="text-center">
+						<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="font-size: 3.5em;">
+						</span>
+					</p>
+					<p class="text-center" id="txt_elapsed"></p>
+				</div>
+			</div>
+		</div>
+	</div> <!-- Modal Reboot -->
+
+	<!-- Modal -->
+	<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="alert alert-success" role="alert">
+						<span id="alert-message"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/js/bootstrap-notify.min.js"></script>
+	-->
+
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/bootstrap-table.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+
+	<script>
+		
+		// Show the html element 
+		// according to the brower language
+		// and hide the others
+		//
+		// class name : 'lang-content fr' for french
+		//              'lang-content en' for english
+		//     
+		// lang : 'fr' or 'en'
+		function showContentLang(lang) {
+			var contents = document.getElementsByClassName('lang-content');
+			for (var i = 0; i < contents.length; i++) {
+				contents[i].classList.remove('active');
+			}
+			var langContents = document.getElementsByClassName(lang);
+			for (var i = 0; i < langContents.length; i++) {
+				// On ne touche pas aux <option> des <select>
+				if (contents[i].nodeName.toLowerCase() !== "option")
+					langContents[i].classList.add('active');
+			}
+
+			// Traittement de tous les selects
+			var selectElements = document.querySelectorAll('select');
+			console.log(selectElements);
+			selectElements.forEach(select => {
+				console.log(`Options for select with id: ${select.id}`);
+				Array.from(select.options).forEach(option => {
+					console.log(option.value, option.text);
+					if (option.classList.contains(lang)) {
+						option.style.display = 'block';
+					} else {
+						option.style.display = 'none';
+						// it's necessary to remove duplicate value in the select because even with display none
+						// the first value is selected when you set the value of the select
+						option.value = "x";
+					}
+				});
+			});
+		}
+		
+		// Show the html element 
+		// according to the temperature unit
+		// and hide the other
+		//
+		// class name : 'temp-unit celsius' for celsius
+		//              'temp-unit fahrenheit' for fahrenheit
+		//     
+		// unit : 'celsius' or 'fahrenheit'
+		function showContentUnit(unit) {
+			var contents = document.getElementsByClassName('temp-unit');
+			for (var i = 0; i < contents.length; i++) {
+				contents[i].classList.remove('active');
+			}
+			var langContents = document.getElementsByClassName(unit);
+			for (var i = 0; i < langContents.length; i++) {
+				langContents[i].classList.add('active');
+			}
+		}
+
+		// type : success, warning, danger
+		function showAlertMessage(message, type, delay) {
+			document.getElementById('alert-message').innerHTML = message;
+
+			var modalContent = document.querySelector('#alertModal .alert');
+			modalContent.className = 'alert alert-' + type; // Update modal style based on alert type
+
+			$('#alertModal').modal('show');
+			setTimeout(function() {
+				$('#alertModal').modal('hide');
+			}, delay); // 3000ms = 3 seconds delay before closing
+		}
+
+		function RSSIFormatter(value, row) {  
+			var rssi=parseInt(row.rssi);  
+			var signal = Math.min(Math.max(2*(rssi+100),0),100);
+			var cl, htm;  
+			cl='success';  
+			if (signal<70) cl ='info';  
+			if (signal<50) cl ='warning';  
+			if (signal<30) cl ='danger';  
+
+			cl = 'progress-bar-' + cl;  
+			htm = "<div class='progress progress-tbl'>";
+			htm+= "<div class='progress-bar "+cl+"' role='progressbar' aria-valuemin='0' aria-valuemax='100' ";
+			htm+= "aria-valuenow='"+signal+"' style='width:"+signal+"%'>"+rssi+"dB</div></div>";
+			return htm;
+		}  
+
+		function waitReboot() {
+			var url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '') + '/#tab_sys' ;
+			$('#txt_srv').text('Tentative de connexion à '+url);
+			$('#mdl_wait').modal();
+
+			var thistimer=setInterval(function() {
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: '/hb.htm',
+					timeout: 900,
+					success: function(data, textStatus, XMLHttpRequest) {
+						console.log(data);
+						if (data === 'OK') {
+							$('#mdl_wait').modal('hide');	
+							clearInterval(thistimer);
+							window.location = url;
+							location.reload();
+							elapsed=0;
+						}
+					}
+				});
+				elapsed++;
+				$('#txt_elapsed').text('Temps écoulé ' + elapsed + ' s');
+			}
+			,1000);  
+		}
+
+		// https://stackoverflow.com/questions/41431322/how-to-convert-formdata-html5-object-to-json
+		// Convert FormElement to JSON
+		// var jsonData = FormDataToJSON(document.getElementById('FormId'));
+		function FormDataToJSON(FormElement){    
+			var formData = new FormData(FormElement);
+			var ConvertedJSON= {};
+			for (const [key, value]  of formData.entries())
+			{
+				ConvertedJSON[key] = value;
+			}
+
+			return ConvertedJSON
+		}
+
+		window.onload = function() {
+			console.log('window.onload');
+
+			// Retrieve the user's preferred language
+			var userLang = navigator.userLanguage || navigator.language; 
+
+			console.log("User's preferred language is: " + userLang);
+
+			// Switch to french if brower prefered language is 'fr-??'
+			// else stay in english
+			if (userLang.startsWith('fr'))
+				showContentLang('fr');
+			else
+				showContentLang('en');
+
+			$.getJSON( "/config.json", function(json_data) {
+
+				// ======== Fill Form from JSON ===========
+				// Recupère tous les éléments de frm_config
+				var form = document.getElementById( 'frm_config' );
+				var allFormControls = form.elements;
+				// console.log(allFormControls);
+
+				// Parcours tous les éléments de la form
+				// S'il ont le nom "input"
+				//   On récupère l'id
+				//   On fixe la valeur à la valeur du json ayant le même id
+				for (var i = 0, n = allFormControls.length; i < n; ++i) {
+					if ( ((allFormControls[i].nodeName.toLowerCase() === "input") ||
+						(allFormControls[i].nodeName.toLowerCase() === "select")) &&
+						(allFormControls[i].type.toLowerCase() !== "hidden")) {
+						var el = allFormControls[i];
+						// console.log(el.id);
+						// el.value = "toto";
+					if (el.type === "radio") {
+							// type = radio
+						if (json_data.hasOwnProperty(el.id)) {
+							value = json_data[el.id];
+							if (value === "1")
+								el.checked = true;
+							else
+								el.checked = false;
+						} else {
+							console.warn(' erreur(1): ' + el.id + ' inexistant dans /config.json');  
+						}
+					} else {
+							// other types
+						if (json_data.hasOwnProperty(el.id)) {
+							el.value = json_data[el.id];
+							console.log('set el.id ' + el.id + ',el.value = ' + el.value);
+						} else {
+							console.warn(' erreur(2): ' + el.id + ' inexistant dans /config.json');  
+						}
+					}
+				}
+			}
+
+			therm_unit = json_data["therm_unit"];
+			console.log('therm_unit = ' + therm_unit)
+			showContentUnit(json_data["therm_unit"])
+
+			console.log("  frm_config filled with json data");
+
+		})
+			.fail(function() { console.log( "error while getting /config.json" );	})
+
+			$('#tab_scan_data').bootstrapTable('refresh',{silent:true, url:'/wifiscan.json'});
+
+		}
+
+
+		$('#tab_scan_data').on('load-success.bs.table', function (e, data) {
+			console.log('tab_scan_data loaded');  
+		});
+
+		$('#tab_scan').on('click-row.bs.table', function (e, name, args) {  
+			$('#ssid').val(name.ssid);  
+			setTimeout(function(){$('#psk').focus()},500);  
+			$('#tab_scan').modal('hide');  
+		});
+
+		$('#btn_scan').click(function () {  
+			$('#tab_scan_data').bootstrapTable('refresh',{url:'/wifiscan.json',showLoading:false,silent:true});  
+		});  
+
+		$('#btn_reset').click(function () {  
+			$.post('/factory_reset');  
+			waitReboot(); 
+			return false;
+		});  
+
+		$('#btn_reboot').click(function () {  
+			$.post('/reset'); 
+			waitReboot(); 
+			return false;
+		});  
+
+		$('#btn_test_relay').click(function () {
+			var term_mode = document.getElementById( 'term_mode' );
+			console.log('term_mode.id = ' + term_mode.id + ' term_mode.value = ' + term_mode.value); 
+			if (term_mode.value != 0) {
+				showAlertMessage('Le Thermostat doit être OFF', 'warning', 3000); // 3000ms = 3 seconds delay
+			} else {
+				// $.post('/test_relay');  
+				showAlertMessage('Test relais à implémenter', 'warning', 3000); // 3000ms = 3 seconds delay
+			}
+			return false;
+		});  
+
+
+		// $('#frm_config').validator().on('submit', function (e) {
+		$('#frm_config').on('submit', function (event) {
+			// everything looks good!
+			if (!event.isDefaultPrevented()) {
+				event.preventDefault();
+				console.log("Form Submit");
+
+				var jsonData = FormDataToJSON(document.getElementById('frm_config'));
+				console.log(jsonData);
+
+				$.post('/config_form.json', jsonData)
+				.done( function(msg, textStatus, xhr) { 
+						// Notify(2, 'ok', 'success', 'Enregistrement effectué', xhr.status+' '+msg);
+						showAlertMessage('Enregistrement effectué', 'success', 3000); // 3000ms = 3 seconds delay
+					})
+				.fail( function(xhr, textStatus, errorThrown) {
+						// Notify(4, 'remove', 'danger', 'Erreur lors de l\'enregistrement', xhr.status+' '+errorThrown);
+						showAlertMessage('Erreur lors de l\'enregistrement', 'warning', 3000); // 3000ms = 3 seconds delay
+					}
+					);
+			}
+		});
+
+	</script>
+</body>
+</html>
+

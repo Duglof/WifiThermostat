@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Fichiers du système</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-table.min.css" rel="stylesheet">
+<style>
+    /* lang-content fr en */
+    .lang-content { display: none; }
+    .lang-content.active { display: block; }
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand lang-content fr" href="index.htm">Etat</a>
+		<a class="navbar-brand lang-content en active" href="index.htm">Status</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="system.htm">Système</a>
+					<a class="nav-link lang-content en active" href="system.htm">System</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="prog_heat.htm">Programme de chauffage</a>
+					<a class="nav-link lang-content en active" href="prog_heat.htm">Heat program</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="setup.htm">Configuration</a>
+					<a class="nav-link lang-content en active" href="setup.htm">Setup</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="files.htm">Fichiers</a>
+					<a class="nav-link lang-content en active" href="files.htm">Files</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<!-- LittleFS -->
+	<div class="container">
+		<h1 class= "lang-content fr">Fichiers du système</h1>
+		<h1 class= "lang-content en active">System files</h1>
+		<div>
+			<span class="lang-content fr" style="float:left;width:18ex;text-align:center;">Utilisation : </span>
+			<span class="lang-content en active" style="float:left;width:18ex;text-align:center;">Use : </span>
+			<div class="progress">
+				<div class="progress-bar progress-bar-success" style="width:0" id="pfsbar">
+					<span class="show lang-content fr" id="fs_use_fr">Calcul en cours</span>
+					<span class="show lang-content en active" id="fs_use_en">Calculation in progress</span>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title lang-content fr">Système de fichiers LittleFS</h3>
+				<h3 class="panel-title lang-content en active">LittleFS file system</h3>
+			</div>
+			<div class="panel-body">
+				<table 	data-toggle="table" 
+				data-toolbar="#fs_toolbar"
+				class="table table-striped table-condensed" 
+				data-show-refresh="true" 
+				data-show-columns="true" 
+				data-search="true" 
+				id="tab_fs_data" 
+				data-select-item-name="toolbar4">
+				<thead>
+					<tr>
+						<th data-field="na" data-align="left" data-sortable="true" data-formatter="fileFormatter">
+        				    <span class="lang-content fr">Fichier</span>
+        				    <span class="lang-content en active">File</span>
+                        </th>
+						<th data-field="va" data-align="center" data-sortable="true">
+        				    <span class="lang-content fr">Taille (Octets)</span>
+        				    <span class="lang-content en active">Size (Bytes)</span>
+                        </th>
+						<th data-field="act" data-align="left">
+        				    <span class="lang-content fr">Action</span>
+        				    <span class="lang-content en active">Action</span>
+                        </th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+<!-- Scripts devant être chargés en fin de page -->
+<!--
+<script src="js/jquery-3.5.1.slim.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+-->
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+<script src="js/bootstrap-table.min.js"></script>
+
+<script>
+	var Timer_sys;
+
+    // Show the html element 
+    // according to the brower language
+    // and hide the others
+    //
+    // class name : 'lang-content fr' for french
+    //              'lang-content en' for english
+    //     
+    // lang : 'fr' or 'en'
+    function showContentLang(lang) {
+        var contents = document.getElementsByClassName('lang-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(lang);
+        for (var i = 0; i < langContents.length; i++) {
+            // On ne touche pas aux <option> des <select>
+            if (contents[i].nodeName.toLowerCase() !== "option")
+                langContents[i].classList.add('active');
+        }
+
+        // Traittement de tous les selects
+        var selectElements = document.querySelectorAll('select');
+        console.log(selectElements);
+        selectElements.forEach(select => {
+            console.log(`Options for select with id: ${select.id}`);
+            Array.from(select.options).forEach(option => {
+                console.log(option.value, option.text);
+                if (option.classList.contains(lang)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                    // it's necessary to remove duplicate value in the select because even with display none
+                    // the first value is selected when you set the value of the select
+                    option.value = "x";
+                }
+            });
+        });
+    }
+
+	function formatSize(bytes) {
+		if (bytes < 1024)  return bytes+' Bytes';
+		if (bytes < (1024*1024)) return (bytes/1024).toFixed(0)+' KB';
+		if (bytes < (1024*1024*1024)) return (bytes/1024/1024).toFixed(0)+' MB';
+		return (bytes/1024/1024/1024).toFixed(0)+' GB';
+	}
+
+	function fileFormatter(value, row) {  
+		var fname = row.na;
+		var htm = '';  
+
+		htm+= '<a href="' + fname + '">' + fname + '</a>';
+
+		return htm;
+	}  
+
+
+    window.onload = function() {
+
+        console.log('window.load ...');
+
+		$.getJSON( "/spiffs.json", function(json_data) {
+		    var pb, pe, cl;  		
+            var total,used;
+
+            $('#tab_fs_data').bootstrapTable('load', json_data.files );
+ 
+		    total= json_data.spiffs[0].Total; 
+		    used = json_data.spiffs[0].Used;
+
+		    pe=parseInt(used*100/total);  
+		    if (isNaN(pe)) 
+			    pe=0;  
+		    cl='success';  
+		    if (pe>70) cl ='warning';  
+		    if (pe>85) cl ='danger';  
+
+		    cl = 'progress-bar-' + cl;  
+		    if (pe>0) 
+			    $('#sspiffs').text(pe+'%');  
+
+            console.log('set fs_use_fr fs_use_en text ...');
+
+		    $('#fs_use_fr').text(formatSize(used)+' / '+formatSize(total));  
+		    $('#fs_use_en').text(formatSize(used)+' / '+formatSize(total));  
+		    $('#pfsbar').attr('class','progress-bar '+cl);  
+		    $('#pfsbar').css('width', pe+'%');
+       })
+
+        // Retrieve the user's preferred language
+        var userLang = navigator.userLanguage || navigator.language; 
+
+        console.log("User's preferred language is: " + userLang);
+
+        // Switch to french if brower prefered language is 'fr-??'
+        // else stay in english
+        if (userLang.startsWith('fr'))
+            showContentLang('fr');
+
+    }
+
+
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Données du système</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-table.min.css" rel="stylesheet">
+<style>
+    /* lang-content fr en */
+    .lang-content { display: none; }
+    .lang-content.active { display: block; }
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand lang-content fr" href="index.htm">Etat</a>
+		<a class="navbar-brand lang-content en active" href="index.htm">Status</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="system.htm">Système</a>
+					<a class="nav-link lang-content en active" href="system.htm">System</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="prog_heat.htm">Programme de chauffage</a>
+					<a class="nav-link lang-content en active" href="prog_heat.htm">Heat program</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="setup.htm">Configuration</a>
+					<a class="nav-link lang-content en active" href="setup.htm">Setup</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link lang-content fr" href="files.htm">Fichiers</a>
+					<a class="nav-link lang-content en active" href="files.htm">Files</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<h1 class= "lang-content fr">Données du système</h1>
+		<h1 class= "lang-content en active">System data</h1>
+		<table 	data-toggle="table" 
+		class="table table-striped table-condensed" 
+		data-show-refresh="true"
+		data-show-toggle="true"
+		data-search="true"
+		id="tab_sys_data"
+        data-url="/system.json"
+		data-select-item-name="toolbar2">
+		<thead>
+			<tr>
+				<th data-field="na" data-align="left">
+				    <span class="lang-content fr">Donnée</span>
+				    <span class="lang-content en active">Data</span>
+                </th>
+				<th data-field="va" data-align="left">
+				    <span class="lang-content fr">Valeur</span>
+				    <span class="lang-content en active">Value</span>
+                </th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+
+<!-- Scripts devant être chargés en fin de page -->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  -->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.20.2/bootstrap-table.min.js"></script> -->
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+<script src="js/bootstrap-table.min.js"></script>
+
+<script>
+    // Show the html element 
+    // according to the brower language
+    // and hide the others
+    //
+    // class name : 'lang-content fr' for french
+    //              'lang-content en' for english
+    //     
+    // lang : 'fr' or 'en'
+    function showContentLang(lang) {
+        var contents = document.getElementsByClassName('lang-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+        }
+        var langContents = document.getElementsByClassName(lang);
+        for (var i = 0; i < langContents.length; i++) {
+            // On ne touche pas aux <option> des <select>
+            if (contents[i].nodeName.toLowerCase() !== "option")
+                langContents[i].classList.add('active');
+        }
+
+        // Traittement de tous les selects
+        var selectElements = document.querySelectorAll('select');
+        console.log(selectElements);
+        selectElements.forEach(select => {
+            console.log(`Options for select with id: ${select.id}`);
+            Array.from(select.options).forEach(option => {
+                console.log(option.value, option.text);
+                if (option.classList.contains(lang)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                    // it's necessary to remove duplicate value in the select because even with display none
+                    // the first value is selected when you set the value of the select
+                    option.value = "x";
+                }
+            });
+        });
+    }
+
+    window.onload = function() {        // Function to refresh the table with options
+        console.log('window.load ...');
+
+        function refreshTable() {
+
+            //  $('#tab_sys_data').bootstrapTable('refresh',{silent:true, url:'/system.json'}); nok on phone
+            //  $('#tab_sys_data').bootstrapTable('refresh',{silent:true});   nok on phone
+            // $('#tab_sys_data').bootstrapTable('refresh');   display blink
+
+            console.log('refreshTable ...');
+			$.getJSON( "/system.json", function(json_data) {
+                $('#tab_sys_data').bootstrapTable('load', json_data);
+ 			})
+			.fail(function() { console.log( "error while getting /system.json" );	})
+        }
+
+        // first refresh
+        // use of data-url="/system.json" in tab_sys_data
+ 
+        $('#tab_sys_data').bootstrapTable('refresh');
+
+        // Retrieve the user's preferred language
+        var userLang = navigator.userLanguage || navigator.language; 
+
+        console.log("User's preferred language is: " + userLang);
+
+        // Switch to french if brower prefered language is 'fr-??'
+        // else stay in english
+        if (userLang.startsWith('fr'))
+            showContentLang('fr');
+
+        // Set a timer to refresh the table every 1 seconds (1000 milliseconds)
+        setInterval(refreshTable, 1000);
+   }
+
+</script>
+
+
+</body>
+</html>
+

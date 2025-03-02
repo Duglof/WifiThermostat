@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Programme de Chauffage</title>
+    <!--
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	-->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">	
+	<style>
+		.form-label-center {
+			text-align: center;
+			display: block;
+			width: 100%;
+		}
+
+		.label-auto-width {
+			display: inline-block;
+			width: auto;
+		}
+
+		.input-temp {
+			max-width: 10ch;
+		}
+
+		.input-heure {
+			--width: 7ch;
+			width: auto;
+		}
+
+		// style for checkbox : begin
+		.checkbox-label {
+			display: inline-block;
+			cursor: pointer;
+			position: relative;
+			margin-right: 10px; /* Space between checkboxes */
+		}
+
+		.checkbox-label input[type="checkbox"] {
+			display: none;
+		}
+
+		.checkbox-label span {
+			color: grey;
+			font-size: 16px;
+			transition: color 0.3s, text-decoration 0.3s;
+			text-decoration: line-through; /* Strikethrough when unchecked */
+		}
+
+		.checkbox-label input[type="checkbox"]:checked + span {
+			color: blue; /* Change to your desired color */
+			text-decoration: none; /* Remove strikethrough when checked */
+		}
+
+		.tooltip {
+			visibility: hidden;
+			width: 120px;
+			background-color: blue;
+			color: #fff;
+			text-align: center;
+			border-radius: 5px;
+			padding: 5px;
+			position: absolute;
+			z-index: 1;
+			bottom: 125%; /* Position above the letter */
+			left: 50%;
+			margin-left: -60px;
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
+
+		.checkbox-label:hover .tooltip {
+			visibility: visible;
+			opacity: 1;
+		}
+		// style for checkbox : end
+
+.custom-line-height td {
+  line-height: 1.5; /* Adjust the value as needed */
+}
+
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<a class="navbar-brand" href="index.htm">Etat</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="system.htm">Système</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="prog_heat.htm">Plages Horaires</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="setup.htm">Configuration</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="files.htm">Fichiers</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container mt-5">
+		<div class="card">
+			<div class="card-body">
+				<h1>Programme de Chauffage</h1>
+				<form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_prog_heat" action="">
+					<table data-toggle="table" 
+					class="table  custom-line-height" 
+					data-show-refresh="true"
+					data-show-toggle="true"
+					data-search="true"
+					id="tab_prog_heat"
+					data-select-item-name="toolbar2">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th data-field="na" data-align="left">Jours</th>
+							<th data-field="va" data-align="left">Valeurs</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row">1</th>
+							<th>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_0">
+									<span>Di</span>
+									<div class="tooltip">Dimanche</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_1">
+									<span>Lu</span>
+									<div class="tooltip">Lundi</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_2">
+									<span>Ma</span>
+									<div class="tooltip">Mardi</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_3">
+									<span>Me</span>
+									<div class="tooltip">Mercredi</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_4">
+									<span>Je</span>
+									<div class="tooltip">Jeudi</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_5">
+									<span>Ve</span>
+									<div class="tooltip">Vendredi</div>
+								</label>
+								<label class="checkbox-label">
+									<input type="checkbox" id="p0_wday_6">
+									<span>Sa</span>
+									<div class="tooltip">Samedi</div>
+								</label>
+							</th>
+							<th>
+								<div class="input-group">
+									<input type="number" step="0.1" class="form-control input-temp" id="p0_temperature" name="temperature" value="17.1" required>
+									<div class="input-group-append">
+										<span class="input-group-text">°C</span>
+									</div>
+									<label for="p0_time_d" class="label-auto-width">de :</label>
+									<input type="time" class="form-control input-heure" id="p0_time_d" name="p0_time_d" value="08:00">
+									<label for="p0_time_f" class="label-auto-width">à :</label>
+									<input type="time" class="form-control input-heure" id="p0_time_f" name="p0_time_f" value="12:15">
+								</div>
+							</th>
+						</tr>
+					</tbody>
+				</table>
+				<div class="card-footer">
+					<div class="text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-default btn-success">Enregistrer</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="alert alert-success" role="alert">
+					<span id="alert-message"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+-->
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>  <!-- Needed for mobile menu -->
+
+
+<script>
+/*
+	document.getElementById('time_f_j1_p1').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p2').value = this.value;
+	}); 
+	document.getElementById('time_f_j1_p2').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p3').value = this.value;
+	}); 
+	document.getElementById('time_f_j1_p3').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p4').value = this.value;
+	}); 
+	document.getElementById('time_f_j1_p4').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p5').value = this.value;
+	}); 
+	document.getElementById('time_f_j1_p5').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p6').value = this.value;
+	}); 
+	document.getElementById('time_f_j1_p6').addEventListener('input', function() {
+		// Copier la valeur de input1 dans input2
+		document.getElementById('time_d_j1_p7').value = this.value;
+	}); 
+*/
+		// type : success, warning, danger
+	function showAlertMessage(message, type, delay) {
+		document.getElementById('alert-message').innerHTML = message;
+
+		var modalContent = document.querySelector('#alertModal .alert');
+			modalContent.className = 'alert alert-' + type; // Update modal style based on alert type
+
+			$('#alertModal').modal('show');
+			setTimeout(function() {
+				$('#alertModal').modal('hide');
+			}, delay); // 3000ms = 3 seconds delay before closing
+		}
+
+
+		// https://stackoverflow.com/questions/41431322/how-to-convert-formdata-html5-object-to-json
+		// Convert FormElement to JSON
+		// var jsonData = FormDataToJSON(document.getElementById('FormId'));
+		function FormDataToJSON(form){    
+			var ConvertedJSON= {};
+			// for (const [key, value]  of formData.entries())
+			var allFormControls = form.elements;
+			for (var i = 0, n = allFormControls.length; i < n; ++i) {
+				if ( allFormControls[i].nodeName.toLowerCase() === "input" )  {
+					var el = allFormControls[i];
+					if ( (el.type === "number") || (el.type === "time") ) {
+						console.log('get el.id ' + el.id + ',el.value = ' + el.value);
+						ConvertedJSON[el.id] = el.value;
+					} else if ( el.type === "checkbox" ) {
+						console.log('get el.id ' + el.id + ',el.checked = ' + el.checked);
+						ConvertedJSON[el.id] = el.checked;
+					} else {
+						console.warn(' erreur: ' + el.id + ' type ' + el.type + 'non traité');  
+					}
+				}
+			}
+			return ConvertedJSON
+		}
+
+		window.onload = function() {
+			console.log('window.onload');
+
+			$.getJSON( "/prog_heat.json", function(json_data) {
+                // console.log('json_data = ' + json_data);
+				var form = document.getElementById( 'frm_prog_heat' );
+				var allFormControls = form.elements;
+                // console.log('nb form controls = ' + allFormControls.length);
+				for (var i = 0, n = allFormControls.length; i < n; ++i) {
+					if ( allFormControls[i].nodeName.toLowerCase() === "input") {
+						var el = allFormControls[i];
+                        // console.log('search for el.id = ' + el.id);
+						if (json_data.hasOwnProperty(el.id)) {
+							console.log("set el.id " + el.id);
+							if ( (el.type === "number") || (el.type === "time") ) {
+                                // console.log("set number or time to " + json_data[el.id]);
+								el.value = json_data[el.id];
+							} else if (el.type === "checkbox") {
+                                // console.log("set checkbox to " + json_data[el.id]);
+								if (json_data[el.id] == "true")
+									el.checked = true;
+								else
+									el.checked = false;
+							} else {
+								console.warn(' erreur: ' + el.id + ' type ' + el.type + 'non traité');  
+							}
+						} else {
+							console.warn(' erreur: ' + el.id + ' inexistant dans /config.json');  
+						}
+					}
+				}
+			})
+			.fail(function() { console.log( "error while getting /prog_heat.json" );	})
+
+		}
+
+		$('#frm_prog_heat').on('submit', function (event) {
+			// everything looks good!
+			if (!event.isDefaultPrevented()) {
+				event.preventDefault();
+				console.log("Form Submit");
+
+				var jsonData = FormDataToJSON(document.getElementById('frm_prog_heat'));
+				console.log(jsonData);
+
+				$.post('/prog_heat_form.json', jsonData)
+				.done( function(msg, textStatus, xhr) { 
+						showAlertMessage('Enregistrement effectué', 'success', 3000); // 3000ms = 3 seconds delay
+					})
+				.fail( function(xhr, textStatus, errorThrown) {
+						showAlertMessage('Erreur lors de l\'enregistrement', 'warning', 3000); // 3000ms = 3 seconds delay
+					}
+					);
+			}
+		});
+
+	</script>
+
+</body>
+</html>
+
