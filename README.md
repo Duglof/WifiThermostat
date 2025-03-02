@@ -60,7 +60,7 @@ WifiThermostat for ESP8266 or ESP32
 |      or           |            |              |              |               |               |
 | DS18B20           |  DQ        | GPIO 13 (D7) | GPIO 13 (D7) | GPIO 15 (D15) | GPIO 15 (D15) |
 |                   |            |              |              |               |               |
-| RELAY (NO)        | IN1        | GPIO 12 (D6) | GPIO 12 (D6) | A5 (GPIO 33)  | idem ?        |
+| RELAY (NO)        | IN1        | GPIO 12 (D6) | GPIO 12 (D6) | A4 (GPIO 32)  | GPIO 6        |
 | RUF RELAY N°2     | IN1        | GPIO 14 (D5) | GPIO 14 (D5) |               | GPIO 14 select<br> built-in antenna |
 |                   |            |              |              |               |               |
 | LED INTERNE       |            | GPIO 2 (D4) <br> blue| GPIO 2 (D4) <br> blue| GPIO 2 (D2) <br>blue | GPIO 8 (D8) <br> rgb led |
@@ -95,7 +95,7 @@ Sous réserve de tests
 
 ## ESP32-C6 
 
-[esp32-C6](docs/ESP-C6-Mini.png)
+[esp32-C6](docs/ESP32-C6-Mini.png)
 
 [esp32-C6 HTU connections](docs/ESP32-C6-gpio-htu21.jpg)
 
