@@ -134,25 +134,20 @@ Sous réserve de tests
 ## Etat du thermostat
 
 ### Français en °C celsius
-
 ![Etat du thermostat Fr](docs/web-thermostat-state-fr.jpg)
 
 ### Anglais en °F fahrenheit
-
 ![Etat du thermostat en](docs/web-thermostat-state-en.jpg)
 
 ## Données du système
-
 ![Données du système](docs/web-thermostat-system.jpg)
 
 ## Programme de chauffage
-
 ![Programme de chauufage](docs/web-thermostat-prog-heat.jpg)
 
 ## Configuration
 
 ### Wifi
-
 ![Config Wifi](docs/web-thermostat-config-wifi-fr.png)
 
 ### Thermostat
@@ -168,7 +163,6 @@ Sous réserve de tests
 ![Config avancée](docs/web-thermostat-config-avancee-fr.png)
 
 ## Fichiers du système
-
 ![Fichiers du système](docs/web-thermostat-files.jpg)
 
 # Outils à installer (optionnel)
