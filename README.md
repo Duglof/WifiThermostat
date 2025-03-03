@@ -1,6 +1,6 @@
 # WifiThermostat
 WifiThermostat for ESP8266 or ESP32
-- Serveur Web pour la configuration et le suivi (multilangue fançais anglais)
+- Serveur Web pour la configuration et le suivi (multilangue français anglais)
   - Changement de langue automatique en fonction de la langue de votre navigateur
 - Accès avec le nom réseau e.g. http://<nom réseau>.local/
 - Support °C ou °F (celsius ou fahrenheit)
