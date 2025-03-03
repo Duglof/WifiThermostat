@@ -1133,9 +1133,11 @@ void setup()
   server.on("/", handleRoot);
   server.on("/config_form.json", handleFormConfig);
   server.on("/prog_heat_form.json", handleFormProgHeat);
+  server.on("/prog_cool_form.json", handleFormProgCool);
   server.on("/json", sendJSON);
   server.on("/tinfo.json", tinfoJSON);
   server.on("/prog_heat.json", prog_heatJSONTable);
+  server.on("/prog_cool.json", prog_coolJSONTable);
   server.on("/system.json", sysJSONTable);
   server.on("/config.json", confJSONTable);
   server.on("/spiffs.json", spiffsJSONTable);

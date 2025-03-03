@@ -121,17 +121,17 @@
 	<div class="container mt-5">
 		<div class="form">
 			<div class="form-body">
-				<h1 class= "lang-content fr">Programme de Chauffage</h1>
-				<h1 class= "lang-content en active">Heating program</h1>
-				<form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_prog_heat" action="">
+				<h1 class= "lang-content fr">Programme de Climatisation</h1>
+				<h1 class= "lang-content en active">Cooling program</h1>
+				<form class="form-horizontal row-border" method="post" data-toggle="validator" id="frm_prog_cool" action="">
 					<div class="form-row align-items-center">
 						<div class="col-md-4">
-							<label for="prog_heat_default" class="lang-content fr">Température par défaut :</label>
-							<label for="prog_heat_default" class="lang-content en active">Default temperature :</label>
+							<label for="prog_cool_default" class="lang-content fr">Température par défaut :</label>
+							<label for="prog_cool_default" class="lang-content en active">Default temperature :</label>
 						</div>
 						<div class="col-md-4">
 							<div class="input-group">
-								<input type="number" step="0.1" class="form-control" id="prog_heat_default" name="prog_heat_default" required>
+								<input type="number" step="0.1" class="form-control" id="prog_cool_default" name="prog_cool_default" required>
 								<div class="input-group-append">
            						    <span class="input-group-text temp-unit celsius active">°C</span>
            						    <span class="input-group-text temp-unit fahrenheit">°F</span>
@@ -140,7 +140,7 @@
 						</div>
 					</div>
 					<p>&nbsp</p>
-					<table 	class="table table-striped table-condensed" id="tab_prog_heat">
+					<table 	class="table table-striped table-condensed" id="tab_prog_cool">
 						<thead>
 							<tr>
 								<th scope="col">#</th>
@@ -2161,9 +2161,9 @@
 		window.onload = function() {
 			console.log('window.onload');
 
-			$.getJSON( "/prog_heat.json", function(json_data) {
+			$.getJSON( "/prog_cool.json", function(json_data) {
                 // console.log('json_data = ' + json_data);
-				var form = document.getElementById( 'frm_prog_heat' );
+				var form = document.getElementById( 'frm_prog_cool' );
 				var allFormControls = form.elements;
                 // console.log('nb form controls = ' + allFormControls.length);
 				for (var i = 0, n = allFormControls.length; i < n; ++i) {
@@ -2185,7 +2185,7 @@
 								console.warn(' erreur: ' + el.id + ' type ' + el.type + 'non traité');  
 							}
 						} else {
-							console.warn(' erreur: ' + el.id + ' inexistant dans /prog_heat.json');  
+							console.warn(' erreur: ' + el.id + ' inexistant dans /prog_cool.json');  
 						}
 					}
 				}
@@ -2193,7 +2193,7 @@
                 console.log('therm_unit = ' + therm_unit)
                 showContentUnit(json_data["therm_unit"])
 			})
-			.fail(function() { console.log( "error while getting /prog_heat.json" );	})
+			.fail(function() { console.log( "error while getting /prog_cool.json" );	})
 
             // Retrieve the user's preferred language
             var userLang = navigator.userLanguage || navigator.language; 
@@ -2207,16 +2207,16 @@
 
 		}
 
-		$('#frm_prog_heat').on('submit', function (event) {
+		$('#frm_prog_cool').on('submit', function (event) {
 			// everything looks good!
 			if (!event.isDefaultPrevented()) {
 				event.preventDefault();
 				console.log("Form Submit");
 
-				var jsonData = FormDataToJSON(document.getElementById('frm_prog_heat'));
+				var jsonData = FormDataToJSON(document.getElementById('frm_prog_cool'));
 				console.log(jsonData);
 
-				$.post('/prog_heat_form.json', jsonData)
+				$.post('/prog_cool_form.json', jsonData)
 				.done( function(msg, textStatus, xhr) { 
 						showAlertMessage('Enregistrement effectué', 'success', 3000); // 3000ms = 3 seconds delay
 					})

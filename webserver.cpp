@@ -231,6 +231,84 @@ int h,m;
 }
 
 /* ======================================================================
+Function: handleFormProgCool 
+Purpose : handle Prog Cool page
+Input   : -
+Output  : - 
+Comments: -
+====================================================================== */
+void handleFormProgCool(void)
+{
+String response="";
+int ret ;
+char arg[32]; 
+int h,m;
+
+  // Default temp cool
+  if ( server.hasArg(CFG_FORM_THER_PROG_COOL_DEFAULT) ) {
+    String value = server.arg(CFG_FORM_THER_PROG_COOL_DEFAULT); 
+    // Debugf("%s = %s\n", arg, value.c_str());
+    config.thermostat.t_prog_cool_default = value.toFloat() * 10;
+  }
+
+  // All prog cool items
+  for ( int program = 0 ; program < CFG_THER_PROG_COUNT ; program++) {
+    // All days
+    for ( int wday = 0; wday < 8 ; wday++) {
+      sprintf(arg , "p%d_wday_%d", program, wday);
+      if ( server.hasArg(arg) ) {
+        String value = server.arg(arg); 
+        // Debugf("%s = %s\n", arg, value.c_str());
+        if (value == "true") {
+          // Debugln("Set bit");
+          config.thermostat.t_prog_cool[program].days |= (1 << wday); // wday 0 -> bit 0, wday 1 -> bit 1, etc
+        } else {
+          // Debugln("Reset bit");
+          config.thermostat.t_prog_cool[program].days &= ~(1 << wday);
+        }
+        // Debugf("days = %02x\n", config.thermostat.t_prog_cool[program].days);
+      }
+    }
+
+    sprintf(arg, "p%d_temperature", program);
+    if ( server.hasArg(arg) ) {
+      String value = server.arg(arg); 
+      // Debugf("%s = %s\n", arg, value.c_str());
+      config.thermostat.t_prog_cool[program].t_temp = tempDisplayToConfig(value.toFloat());
+    }
+    sprintf(arg, "p%d_time_d", program);
+    if ( server.hasArg(arg) ) {
+      String value = server.arg(arg); 
+      Debugf("%s = %s\n", arg, value.c_str());
+      h = 0; m = 0;
+      sscanf(value.c_str(), "%2d:%2d", &h, &m);
+      Debugf("h = %d; m = %d\n", h, m);
+      config.thermostat.t_prog_cool[program].h_begin = h * 60 + m;    // minutes depuis le debut du jour
+    }
+     sprintf(arg, "p%d_time_f", program);
+    if ( server.hasArg(arg) ) {
+      String value = server.arg(arg);
+      // Debugf("%s = %s\n", arg, value.c_str());
+      h = 0; m = 0;
+      sscanf(value.c_str(), "%2d:%2d", &h, &m);
+      config.thermostat.t_prog_cool[program].h_end = h * 60 + m;      // minutes depuis le debut du jour
+    }
+   
+  }
+
+  if ( saveConfig() ) {
+    ret = 200;
+    response = "OK";
+  } else {
+    ret = 412;
+    response = "Unable to save configuration";
+  }
+
+  server.send ( ret, "text/plain", response);
+
+}
+
+/* ======================================================================
 Function: handleFormConfig 
 Purpose : handle main configuration page
 Input   : -
@@ -755,6 +833,77 @@ String stringValue;
     // heureminute fin
     sprintf(elementId, "p%d_time_f", program);
     sprintf(elementValue, "%02d:%02d", config.thermostat.t_prog_heat[program].h_end / 60, config.thermostat.t_prog_heat[program].h_end % 60);
+
+    response+=elementId;      response+=FPSTR(FP_QCQ);      response+=elementValue;  
+    if (program == CFG_THER_PROG_COUNT - 1) {
+      response+= FPSTR(FP_Q);    // Last item
+    } else {
+      response+= FPSTR(FP_QCNL);
+    }
+
+  }
+  // Json end
+  response += FPSTR(FP_JSON_END);
+
+  server.send ( 200, "text/json", response );
+  Debugln(F("Ok!"));
+}
+
+/* ======================================================================
+Function: prog_coolJSONTable 
+Purpose : dump all prog heat values in JSON format for browser
+Input   : -
+Output  : - 
+Comments: -
+====================================================================== */
+void prog_coolJSONTable()
+{
+String response = "";
+char elementId[32]; 
+char elementValue[16];
+String stringValue;
+
+  Debugln("prog_coolJSONTable");
+
+  // Json start
+  response = FPSTR(FP_JSON_START); 
+
+
+  response+="\"";
+
+  // Default cool temp
+  response+=CFG_FORM_THER_PROG_COOL_DEFAULT; response+=FPSTR(FP_QCQ);      response+=String((float)config.thermostat.t_prog_cool_default / 10.0, 1);     response+= FPSTR(FP_QCNL);
+
+  // Thermostat unit : celsius / fahrenheit
+  response+=CFG_FORM_THER_UNIT;      response+=FPSTR(FP_QCQ); response+=(config.thermostat.options & t_option_fahrenheit ? "fahrenheit" : "celsius"); response+= FPSTR(FP_QCNL);
+
+  // Les valeurs true / false doivent être transmises entourées de guillemets
+  // sinon le $.getJSON( "/prog_cool.json" ) échoue 
+
+  for ( int program = 0 ; program < CFG_THER_PROG_COUNT ; program++) {
+    // Debugf( "program %d : %02x\n", program, config.thermostat.t_prog_cool[program].days);
+    for ( int wday = 0; wday < 8 ; wday++) {
+      sprintf(elementId , "p%d_wday_%d", program, wday);
+      if ( config.thermostat.t_prog_cool[program].days & (1 << wday) )
+        stringValue = "true";
+      else
+        stringValue = "false";
+      response+=elementId;      response+=FPSTR(FP_QCQ);      response+=stringValue;     response+= FPSTR(FP_QCNL);
+    }
+        
+    // target temp
+    sprintf(elementId, "p%d_temperature", program);
+    stringValue = tempConfigToDisplay(config.thermostat.t_prog_cool[program].t_temp);
+    response+=elementId;      response+=FPSTR(FP_QCQ);      response+=stringValue;     response+= FPSTR(FP_QCNL);
+
+    // heureminute debut
+    sprintf(elementId, "p%d_time_d", program);
+    sprintf(elementValue, "%02d:%02d", config.thermostat.t_prog_cool[program].h_begin / 60, config.thermostat.t_prog_cool[program].h_begin % 60);
+    response+=elementId;      response+=FPSTR(FP_QCQ);      response+=elementValue;     response+= FPSTR(FP_QCNL);
+
+    // heureminute fin
+    sprintf(elementId, "p%d_time_f", program);
+    sprintf(elementValue, "%02d:%02d", config.thermostat.t_prog_cool[program].h_end / 60, config.thermostat.t_prog_cool[program].h_end % 60);
 
     response+=elementId;      response+=FPSTR(FP_QCQ);      response+=elementValue;  
     if (program == CFG_THER_PROG_COUNT - 1) {
