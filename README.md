@@ -166,6 +166,10 @@ Sous réserve de tests
 ## Fichiers du système
 ![Fichiers du système](docs/web-thermostat-files.jpg)
 
+# Tests
+## Tests Mqtt
+![Tests Mqtt](docs/WifiThermostat-mqtt-test.png)
+
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
 
