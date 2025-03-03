@@ -765,7 +765,9 @@ boolean ret = false;
         // And submit all to mqtt
         Debug("mqtt ");
         Debug(topic);
-        ret = MQTTclient.publish(String(topic).c_str(), String(payload).c_str() , true);      
+        Debug( " value ");
+        Debug(payload);
+        ret = MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
         if (ret)
           Debugln(" OK");
         else
@@ -778,7 +780,9 @@ boolean ret = false;
         // And submit all to mqtt
         Debug("mqtt ");
         Debug(topic);
-        ret &= MQTTclient.publish(String(topic).c_str(), String(payload).c_str() , true);      
+        Debug( " value ");
+        Debug(payload);
+        ret &= MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
         if (ret)
           Debugln(" OK");
         else
@@ -797,7 +801,7 @@ boolean ret = false;
           Debug(topic);
           Debug( " value ");
           Debug(payload);
-          ret &= MQTTclient.publish(String(topic).c_str(), String(payload).c_str() , true);      
+          ret &= MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
           if (ret)
             Debugln(" OK");
           else
@@ -822,33 +826,33 @@ boolean mqttPost(String i_sub_topic, String i_value)
 String topic;
 boolean ret = false;
 
-  Debugln("mqttPost publish ");
-
   // Some basic checking
-  if (*config.mqtt.host) {
-      
-    if (*config.mqtt.topic) {
-      topic = String(config.mqtt.topic);
-      topic += "/";
-      topic += i_sub_topic;
-      Debug(topic);
-      Debug( " value = '");
-      Debug(i_value);
-      // And submit to mqtt
-      ret = MQTTclient.publish(topic.c_str(), i_value.c_str() , true);             
-      if (ret)
-        Debugln("' OK");
-      else
-        Debugln("' KO");
+  if (config.mqtt.freq != 0) {
+    Debug("mqttPost publish ");
+    if (*config.mqtt.host) {
+        
+      if (*config.mqtt.topic) {
+        topic = String(config.mqtt.topic);
+        topic += "/";
+        topic += i_sub_topic;
+        Debug(topic);
+        Debug( " value = '");
+        Debug(i_value);
+        // And submit to mqtt
+        ret = MQTTclient.publish(topic.c_str(), i_value.c_str() , true);             
+        if (ret)
+          Debugln("' OK");
+        else
+          Debugln("' KO");
+      } else {
+        Debugln("config.mqtt.topic is empty");
+      }
     } else {
-      Debugln("config.mqtt.topic is empty");
-    }
-  } else {
-     Debugln("config.mqtt.host is empty");    
-  } // if host
+       Debugln("config.mqtt.host is empty");    
+    } // if host freq
+  } // if 
   return ret;
 }
-
 
 /* ======================================================================
 Function: Mqttcallback
@@ -860,12 +864,6 @@ Input   : topic
 Output  : - 
 Comments: -
 ====================================================================== */
-/*
-void Mqttcallback(char* topic, byte* payload, unsigned int length) {
-}
-*/
-
-
 void Mqttcallback(char* topic, byte* payload, unsigned int length) {
 
 
@@ -1248,6 +1246,7 @@ void setup()
   // Mqtt Update if needed
   if (config.mqtt.freq) {
     Tick_mqtt.attach(config.mqtt.freq, Task_mqtt);
+    mqttConnect();
     mqttStartupLogs();  //send startup logs to mqtt
   }
   
