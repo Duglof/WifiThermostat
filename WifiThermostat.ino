@@ -46,7 +46,8 @@
 // Global project file
 #include "WifiTherm.h"
 
-// PubSubClient V2.8.0 : The maximum message size, including header, is 256 bytes by default. This is configurable via MQTT_MAX_PACKET_SIZE in PubSubClient.h
+// PubSubClient V3.0.2 : https://github.com/hmueller01/pubsubclient3/releases/tag/v3.0.2
+// The maximum message size, including header, is 256 bytes by default. This is configurable via MQTT_MAX_PACKET_SIZE in PubSubClient.h
 // Better define : client.setBufferSize(512);
 #include <PubSubClient.h> //attention mettre #define MQTT_MAX_PACKET_SIZE 512, sinon le payload data ne se raffraichit pas.
 #include <ArduinoOTA.h>
@@ -1421,6 +1422,8 @@ int16_t get_target_temp_from_config(int & o_prog_item)
 // Par defaut la target du mode manual
 int16_t  new_target_temp = config.thermostat.t_manu_heat;
 
+  o_prog_item = -1;         // indéfini par defaut
+
   // set default target 
   if ( config.thermostat.mode == t_mode_cool)
     new_target_temp = config.thermostat.t_manu_cool;
@@ -1621,11 +1624,13 @@ int16_t  new_target;
     t_current_hum = new_hum;
 
     // ======= get target from config ======
-    int new_prog_item;
+    int new_prog_item = -1;
     new_target = get_target_temp_from_config(new_prog_item);
     if ( (new_target != t_target_temp) || (new_prog_item != t_current_prog_item)) {
+      Debugln("######### target temp or num prog have changed");
       t_target_temp = new_target;
       t_current_prog_item = new_prog_item;
+      mqttConnect();
       mqttPost(MQTT_THERMOSTAT_TARGET,tempConfigToDisplay(t_target_temp)); 
       mqttPost(MQTT_THERMOSTAT_PROGNUM,String(t_current_prog_item)); 
     }

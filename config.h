@@ -37,8 +37,8 @@
 #define CFG_MQTT_DEFAULT_TOPIC  "CLIMATE"
 #define CFG_MQTT_DEFAULT_PORT   1883
 
-#define MQTT_HUMIDITY_TOPIC     "sensor/temperature"
-#define MQTT_TEMPERATURE_TOPIC  "sensor/humidity"
+#define MQTT_TEMPERATURE_TOPIC  "sensor/temperature"
+#define MQTT_HUMIDITY_TOPIC     "sensor/humidity"
 #define MQTT_THERMOSTAT_TARGET  "thermostat/target"
 #define MQTT_THERMOSTAT_PROGNUM "thermostat/prognum"
 
