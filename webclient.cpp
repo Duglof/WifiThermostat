@@ -131,19 +131,28 @@ boolean jeedomPost(void)
   if (*config.jeedom.host) {
     String url ; 
     // boolean skip_item;
-
+       
     url = *config.jeedom.url ? config.jeedom.url : "/";
-    url += "?";
 
-
-    url += F("apikey=") ;
+    if (*config.jeedom.url) {
+      url += F("&apikey=");
+    } else {
+      url += F("?apikey=");
+    }
+    
     url += config.jeedom.apikey;
 
-    String data = "{\"device\":{\"";
-   
-   Debugln(data);
+    url.replace("%TEMP%",tempConfigToDisplay(t_current_temp));
 
-   ret = httpPost( config.jeedom.host, config.jeedom.port, (char *) url.c_str(),(char *) data.c_str()) ;
+    url.replace("%TARG%",tempConfigToDisplay(t_target_temp));
+
+    url.replace("%HUM%",String(t_current_hum));
+
+    url.replace("%ITEM%",String(t_current_prog_item));
+
+    url.replace("%REL1%",String(t_relay_status));
+  
+    ret = httpPost( config.jeedom.host, config.jeedom.port, (char *) url.c_str(),NULL) ;
  
   } else {
    Debugln("jeedomPost : jeedom host non configuré");

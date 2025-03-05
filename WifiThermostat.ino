@@ -516,7 +516,6 @@ void ResetConfig(void)
   strcpy_P(config.jeedom.host, CFG_JDOM_DEFAULT_HOST);
   config.jeedom.port = CFG_JDOM_DEFAULT_PORT;
   strcpy_P(config.jeedom.url, CFG_JDOM_DEFAULT_URL);
-  //strcpy_P(config.jeedom.plugin, CFG_JDOM_DEFAULT_PLUGIN);
 
   // HTTP Request
   strcpy_P(config.httpReq.host, CFG_HTTPREQ_DEFAULT_HOST);

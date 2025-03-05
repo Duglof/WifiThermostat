@@ -365,7 +365,6 @@ void handleFormConfig(void)
     strncpy(config.jeedom.host,   server.arg("jdom_host").c_str(),  CFG_JDOM_HOST_SIZE );
     strncpy(config.jeedom.url,    server.arg("jdom_url").c_str(),   CFG_JDOM_URL_SIZE );
     strncpy(config.jeedom.apikey, server.arg("jdom_apikey").c_str(),CFG_JDOM_APIKEY_SIZE );
-    strncpy(config.jeedom.plugin,   server.arg("jdom_plugin").c_str(),CFG_JDOM_PLUGIN_SIZE );
     itemp = server.arg("jdom_port").toInt();
     config.jeedom.port = (itemp>=0 && itemp<=65535) ? itemp : CFG_JDOM_DEFAULT_PORT ; 
     itemp = server.arg("jdom_freq").toInt();
@@ -983,7 +982,6 @@ void getConfJSONData(String & r)
   r+=CFG_FORM_JDOM_PORT;              r+=FPSTR(FP_QCQ);       r+=config.jeedom.port;    r+= FPSTR(FP_QCNL); 
   r+=CFG_FORM_JDOM_URL;               r+=FPSTR(FP_QCQ);       r+=config.jeedom.url;     r+= FPSTR(FP_QCNL); 
   r+=CFG_FORM_JDOM_KEY;               r+=FPSTR(FP_QCQ);       r+=config.jeedom.apikey;  r+= FPSTR(FP_QCNL); 
-  r+=CFG_FORM_JDOM_PLUGIN;            r+=FPSTR(FP_QCQ);       r+=config.jeedom.plugin;  r+= FPSTR(FP_QCNL); 
   r+=CFG_FORM_JDOM_FREQ;              r+=FPSTR(FP_QCQ);       r+=config.jeedom.freq;    r+= FPSTR(FP_QCNL);
   
   r+=CFG_FORM_HTTPREQ_HOST;           r+=FPSTR(FP_QCQ);       r+=config.httpReq.host;   r+= FPSTR(FP_QCNL);

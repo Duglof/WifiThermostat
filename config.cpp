@@ -189,12 +189,11 @@ void showConfig()
   DebugF("topic    :"); Debugln(config.mqtt.topic);
   DebugF("freq     :"); Debugln(config.mqtt.freq);
 
-  DebuglnF("\r\n===== Jeedom"); 
+  DebuglnF("\r\n===== Jeedom");
   DebugF("host     :"); Debugln(config.jeedom.host); 
   DebugF("port     :"); Debugln(config.jeedom.port); 
   DebugF("url      :"); Debugln(config.jeedom.url); 
   DebugF("key      :"); Debugln(config.jeedom.apikey); 
-  DebugF("plugin   :"); Debugln(config.jeedom.plugin); 
   DebugF("freq     :"); Debugln(config.jeedom.freq); 
 
   DebuglnF("===== HTTP request"); 

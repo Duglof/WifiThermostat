@@ -44,12 +44,14 @@
 
 #define CFG_JDOM_HOST_SIZE      32
 #define CFG_JDOM_APIKEY_SIZE    64
-#define CFG_JDOM_URL_SIZE       64
-#define CFG_JDOM_PLUGIN_SIZE    32
+#define CFG_JDOM_URL_SIZE       183
 #define CFG_JDOM_DEFAULT_PORT   80
 #define CFG_JDOM_DEFAULT_HOST   "jeedom.local"
-#define CFG_JDOM_DEFAULT_URL    "/core/api/jeeApi.php&type=httpRemoteEvent&eqId=337"
-#define CFG_JDOM_DEFAULT_PLUGIN "httpRemoteEvent"
+
+// Default url to call a scenario
+#define CFG_JDOM_DEFAULT_URL    "/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=temp%3D%TEMP%%20hum%3D%HUM%%20targ%3D%TARG%%20item%3D%ITEM%%20rel1=%REL1%"
+// Default url to call httpRemoteEvent
+// #define CFG_JDOM_DEFAULT_URL    "/core/api/jeeApi.php?plugin=httpRemote&type=httpRemoteEvent&eqId=337"
 
 #define CFG_HTTPREQ_HOST_SIZE    32
 #define CFG_HTTPREQ_PATH_SIZE    150
@@ -119,7 +121,6 @@
 #define CFG_FORM_JDOM_PORT    FPSTR("jdom_port")
 #define CFG_FORM_JDOM_URL     FPSTR("jdom_url")
 #define CFG_FORM_JDOM_KEY     FPSTR("jdom_apikey")
-#define CFG_FORM_JDOM_PLUGIN  FPSTR("jdom_plugin")
 #define CFG_FORM_JDOM_FREQ    FPSTR("jdom_freq")
 
 #define CFG_FORM_HTTPREQ_HOST  FPSTR("httpreq_host")
@@ -195,16 +196,15 @@ typedef struct
 } _thermostat;
 
 // Config for jeedom
-// 192 Bytes
+// ??? Bytes
 typedef struct 
 {
   char  host[CFG_JDOM_HOST_SIZE+1];           // FQDN 
   char  apikey[CFG_JDOM_APIKEY_SIZE+1];       // Secret
   char  url[CFG_JDOM_URL_SIZE+1];             // Post URL
-  char  plugin[CFG_JDOM_PLUGIN_SIZE+1];       // Identifiant compteur
   uint16_t port;                              // Protocol port (HTTP/HTTPS)
   uint32_t freq;                              // refresh rate
-  // uint8_t filler[10];                      // in case adding data in config avoiding loosing current conf by bad crc*/
+  uint8_t filler[10];                         // in case adding data in config avoiding loosing current conf by bad crc*/
 } _jeedom;
 
 // Config for http request
