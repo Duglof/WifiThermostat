@@ -1631,9 +1631,11 @@ int16_t  new_target;
       Debugln("######### target temp or num prog have changed");
       t_target_temp = new_target;
       t_current_prog_item = new_prog_item;
-      mqttConnect();
-      mqttPost(MQTT_THERMOSTAT_TARGET,tempConfigToDisplay(t_target_temp)); 
-      mqttPost(MQTT_THERMOSTAT_PROGNUM,String(t_current_prog_item)); 
+      if (config.mqtt.freq) {
+        mqttConnect();
+        mqttPost(MQTT_THERMOSTAT_TARGET,tempConfigToDisplay(t_target_temp)); 
+        mqttPost(MQTT_THERMOSTAT_PROGNUM,String(t_current_prog_item));
+      }
     }
 
     // ====== update relay status ==========
