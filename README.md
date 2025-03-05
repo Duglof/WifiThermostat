@@ -178,19 +178,35 @@ Sous réserve de tests
 ![Tests Mqtt](docs/WifiThermostat-mqtt-test.png)
 
 ## Test Jeedom
-### Creation plugin virtuel WifiThermostat
+### Configuration du Thermostat 
+- Dans la section Configuration/Jeedom
+- Nom du serveur jeedom : Entrer l'IP de votre jeedom
+- URL : La valeur par défaut est correcte : ne rien changer
+- Clé API : Entrer la clef API du core de votre jeedom
+- Mise à jour : Toutes les minutes
+- Cliquer sur Enregistrer
+- Dans Avancer, cliquer sur 'Redémarrer WifiThermostat'
+
+### Configuration de votre jeedom
+#### Creation plugin virtuel WifiThermostat
+
+- Ajouter le plugin Virtual (gratuit)
+- Dans le plugin vitual, ajouter 'WifiThermostat'
+- Configurer WifiThermostat comme ci-dessous
 ![Plugin WifiThermostat Equipement](docs/jeedom/virtual_wifithermostat_equipement.png)
 ![Plugin WifiThermostat Commandes](docs/jeedom/virtual_wifithermostat_commandes.png)
 
-### Création du scénario
+#### Création du scénario WifiThermostat
+- Configurer votre scenario comme ci-dessous
 ![Scenation General](docs/jeedom/scenario_general.png)
 ![Scenation Code](docs/jeedom/scenario_code.png)
 
 Url de test du scenario
 http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=temp%3D19.4%20hum%3D50%20targ%3D19.2%20item%3D2%20rel1=0&apikey=sa3WxxxxxxxxxxxxxxxxxxxxxxxOJcYC
 
-- Remplacer l'adresse IP par celle de votre jeedom
-- Remplacer la valeur de apikey par l' API Key du core de votre jeedom (Réglages/Système/Configuration : Onglet API : Première ligne : clé API  )
+- Cette url de test permet de test la bonne configuration du virtuel WifiThermostat et du scenario WifiThermostat
+- Remplacer dans l'url ci-dessus l'adresse IP par celle de votre jeedom
+- Remplacer dans l'url ci-dessus la valeur de apikey par l' API Key du core de votre jeedom (Réglages/Système/Configuration : Onglet API : Première ligne : clé API  )
 
 ![Senario Logs](docs/jeedom/scenario_log.png)
 ![Scenation Code](docs/jeedom/scenario_code.png)
