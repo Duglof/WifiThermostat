@@ -190,7 +190,7 @@ http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=
 [Code complet du Scenario](docs/jeedom/scenario_code.txt)
 
 ### Jeedom Dashboard Maison
-[](docs/jeedom/jeedom_dashboard_maison.png)
+![Dashboard WifiThermostat](docs/jeedom/jeedom_dashboard_maison.png)
 
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
