@@ -170,6 +170,28 @@ Sous réserve de tests
 ## Tests Mqtt
 ![Tests Mqtt](docs/WifiThermostat-mqtt-test.png)
 
+## Test Jeedom
+### Creation plugin virtuel WifiThermostat
+![Plugin WifiThermostat Equipement](docs/jeedom/virtual_wifithermostat_equipement.png)
+![Plugin WifiThermostat Commandes](docs/jeedom/virtual_wifithermostat_commandes.png)
+
+### Création du scénario
+![Scenation General](docs/jeedom/scenario_general.png)
+![Scenation Code](docs/jeedom/scenario_code.png)
+
+Url de test du scenario
+http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=temp%3D19.4%20hum%3D50%20targ%3D19.2%20item%3D2%20rel1=0&apikey=sa3WxxxxxxxxxxxxxxxxxxxxxxxOJcYC
+
+- Remplacer l'adresse IP par celle de votre jeedom
+- Remplacer la valeur de apikey par l' API Key du core de votre jeedom (Réglages/Système/Configuration : Onglet API : Première ligne : clé API  )
+
+![Senario Logs](docs/jeedom/scenario_log.png)
+![Scenation Code](docs/jeedom/scenario_code.png)
+[Code complet du Scenario](docs/jeedom/scenario_code.txt)
+
+### Jeedom Dashboard Maison
+[](docs/jeedom/jeedom_dashboard_maison.png)
+
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
 

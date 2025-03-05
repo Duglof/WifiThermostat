@@ -1,0 +1,71 @@
+$scenario->setLog("Senario WifiThermostat : Start ...");
+
+$tags = $scenario->getTags();
+
+// ====== Température ===============================
+$temp = $tags["#temp#"];
+
+if ($temp == '') {
+	$scenario->setLog("le tag temp=<valeur> non transmis ");
+} else {
+	// Mise à jour Températue
+  	$scenario->setLog("Tag temp = $temp");
+	$cmdE = "#[Maison][WifiThermostat][Température]#";
+  	$cmd = cmd::byString($cmdE);
+  	$cmd->event(($temp));
+}
+
+// ===== Humidité ====================================
+$hum =  $tags["#hum#"];
+
+if ($temp == '') {
+	$scenario->setLog("le tag hum=<valeur> non transmis ");
+} else {
+	// Mise à jour Humidité
+  	$scenario->setLog("Tag hum = $hum");
+	$cmdE = "#[Maison][WifiThermostat][Humidité]#";
+  	$cmd = cmd::byString($cmdE);
+  	$cmd->event(($hum));
+}
+
+// ===== Consigne ====================================
+$targ =  $tags["#targ#"];
+
+if ($targ == '') {
+	$scenario->setLog("le tag targ=<valeur> non transmis ");
+} else {
+	// Mise à jour Consigne
+  	$scenario->setLog("Tag targ = $targ");
+	$cmdE = "#[Maison][WifiThermostat][Consigne]#";
+  	$cmd = cmd::byString($cmdE);
+  	$cmd->event(($targ));
+}
+
+// ===== Programme en cours (numéro de ligne) ========
+$item =  $tags["#item#"];
+
+if ($item == '') {
+	$scenario->setLog("le tag item=<valeur> non transmis ");
+} else {
+	// Mise à jour Programme en cours (Numéro)
+  	$scenario->setLog("Tag item = $item");
+	$cmdE = "#[Maison][WifiThermostat][Programme]#";
+  	$cmd = cmd::byString($cmdE);
+  	$cmd->event(($item));
+}
+
+// ===== Etat du relais ========================
+$rel1 =  $tags["#rel1#"];
+
+if ($rel1 == '') {
+	$scenario->setLog("le tag rel1=<valeur> non transmis ");
+} else {
+	// Mise à jour de Relais (Etat)
+  	$scenario->setLog("Tag rel1 = $rel1");
+	$cmdE = "#[Maison][WifiThermostat][Relais]#";
+  	$cmd = cmd::byString($cmdE);
+  	$cmd->event(($rel1));
+}
+
+$scenario->setLog("Senario WifiThermostat : Fin");
+
