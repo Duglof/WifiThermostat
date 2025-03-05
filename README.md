@@ -190,8 +190,8 @@ Sous réserve de tests
 ### Configuration de votre jeedom
 #### Creation plugin virtuel WifiThermostat
 
-- Ajouter le plugin Virtual (gratuit)
-- Dans le plugin vitual, ajouter 'WifiThermostat'
+- Ajouter le plugin Virtuel (gratuit)
+- Dans le plugin virtuel, ajouter 'WifiThermostat'
 - Configurer WifiThermostat comme ci-dessous
 ![Plugin WifiThermostat Equipement](docs/jeedom/virtual_wifithermostat_equipement.png)
 ![Plugin WifiThermostat Commandes](docs/jeedom/virtual_wifithermostat_commandes.png)
