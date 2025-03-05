@@ -174,11 +174,21 @@ boolean httpRequest(void)
   // Some basic checking
   if (*config.httpReq.host)
   {
-      String url ; 
+    String url ; 
 
-      url = *config.httpReq.path ? config.httpReq.path : "/";
-      url += "?";
-      ret = httpPost( config.httpReq.host, config.httpReq.port, (char *) url.c_str(), NULL) ;
+    url = *config.httpReq.path ? config.httpReq.path : "/";
+
+    url.replace("%TEMP%",tempConfigToDisplay(t_current_temp));
+
+    url.replace("%TARG%",tempConfigToDisplay(t_target_temp));
+
+    url.replace("%HUM%",String(t_current_hum));
+
+    url.replace("%ITEM%",String(t_current_prog_item));
+
+    url.replace("%REL1%",String(t_relay_status));
+      
+    ret = httpPost( config.httpReq.host, config.httpReq.port, (char *) url.c_str(), NULL) ;
   } // if host
   return ret;
 }
