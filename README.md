@@ -21,8 +21,15 @@ WifiThermostat for ESP8266 or ESP32
   - Une plage peut être affectée au Week End
   - Pour un plage on coche les jours concernés
 - Si aucune plage ne correspond, c'est la température par défaut qui est utilisée
+- Envoi possible des données vers jeedom 
 - Envoi possible des données à un serveur MQTT
 - Envoi possible d'un requète http
+  - Données envoyées :
+    - %TEMP% : Température
+    - %HUM% : Humidité
+    - %TARG% : Consigne (target)
+    - %ITEM% : Numéro de ligne en cours du programme (-1 si température par défaut du programme)
+    - %REL1% : Etat du relais du thermostat ( 0 = Off ; 1 = On)  
 - Mise à jour via OTA (Wifi) 
 
 # Hardware
