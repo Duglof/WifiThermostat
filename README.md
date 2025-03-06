@@ -197,22 +197,22 @@ C'est nécessaire pour que le code du scénario fonctionne sans modification
 ![Plugin WifiThermostat Equipement](docs/jeedom/virtual_wifithermostat_equipement.png)
 Objet parent : Maison : Nécessaire pour que le script du scénario fonctionne sans modification
 ![Plugin WifiThermostat Commandes](docs/jeedom/virtual_wifithermostat_commandes.png)
-Mettez exactement les mêmes noms aux commandes, elle sont utilisées dans le script du sénario WifiThermostat
+Mettez exactement les mêmes noms aux commandes, elle sont utilisées dans le script du scénario WifiThermostat
 
 #### Création du scénario WifiThermostat
 
-- Outils/Scénarios : Cliquer sur + pour créer le sénario : Nom : WifiThermostat
+- Outils/Scénarios : Cliquer sur + pour créer le scénario : Nom : WifiThermostat
 - Configurer votre scenario comme ci-dessous
 ![Scenation General](docs/jeedom/scenario_general.png)
 Noter l'id du scenario affiché dans le nom de l'onglet : Général (ID : 1)
 ![Scenation Code](docs/jeedom/scenario_code.png)
 Cliquer sur 'Ajouter un bloc' et choisissez 'Code'
 
-Le code complet est accéssible avec le lien ci-dessous : faites un copier puis un coller dans le code du sénario
+Le code complet est accéssible avec le lien ci-dessous : faites un copier puis un coller dans le code du scénario
 [Code complet du Scenario](docs/jeedom/scenario_code.txt)
 
-Si vous cliquer sur le bouton Exécuter du sénario, le sénario fonctionnera mais indiquera dans les logs qu'il ne trouve pas les Tag
-C'est normal, le bouton exécuter ne passe aucun Tag au sénario, il faut utiliser l'url ci-dessous pour envoyer les tags
+Si vous cliquer sur le bouton Exécuter du scénario, le scénario fonctionnera mais indiquera dans les logs qu'il ne trouve pas les Tag
+C'est normal, le bouton exécuter ne passe aucun Tag au scénario, il faut utiliser l'url ci-dessous pour envoyer les tags
 
 Url de test du scénario
 http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=temp%3D19.4%20hum%3D50%20targ%3D19.2%20item%3D2%20rel1=0&apikey=sa3WxxxxxxxxxxxxxxxxxxxxxxxOJcYC
@@ -220,7 +220,7 @@ http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=
 - Cette url de test permet de test la bonne configuration du virtuel WifiThermostat et du scénario WifiThermostat
 - Remplacer dans l'url ci-dessus l'adresse IP par celle de votre jeedom
 - Remplacer dans l'url ci-dessus la valeur de apikey par l' API Key du core de votre jeedom (Réglages/Système/Configuration : Onglet API : Première ligne : clé API  )
-- Remplacer dans l'url ci-dessus id=1 en mettant l'ID de votre sénario : ex : id=3 si ID : 3 dans le nom de l'onglet du sénario WifiThermostat
+- Remplacer dans l'url ci-dessus id=1 en mettant l'ID de votre scénario : ex : id=3 si ID : 3 dans le nom de l'onglet du scénario WifiThermostat
 - Explication de &tags=temp%3D19.4%20hum%3D50%20targ%3D19.2%20item%3D2%20rel1=0
   - Ne doit pas contenir d'espace : c'est %20 qui sépare les tags (c'est le séparateur entre les tags)
   - Ne doit pas contenir de '=' : c'est %3D qui le remplace (%3D est le code ascii de '=') 
@@ -232,7 +232,7 @@ http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=
 - Dans la section Configuration/Jeedom
 - Nom du serveur jeedom : Entrer l'IP de votre jeedom
 - URL : La valeur par défaut est correcte
-  - Remplacer id=1 en mettant l'ID de votre sénario : ex : id=3 si ID : 3 dans le nom de l'onglet du sénario WifiThermostat
+  - Remplacer id=1 en mettant l'ID de votre scénario : ex : id=3 si ID : 3 dans le nom de l'onglet du scénario WifiThermostat
 - Clé API : Entrer la clef API du core de votre jeedom
 - Mise à jour : Toutes les minutes
 - Cliquer sur Enregistrer
@@ -244,7 +244,7 @@ http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=
 ### Jeedom Réorganisation
 
 Changer si vous voulez l'objet parent de votre thermostat pour le placer ou vous voulez, Jeedom devrait modifier automatiquement
-le code de votre sénario Wifithermostat pour qu'il continue à fonctionner !!!
+le code de votre scénario Wifithermostat pour qu'il continue à fonctionner !!!
 
 # Outils à installer (optionnel)
 Pour le debug des exceptions qui apparaitrait dans 'Outils/Moniteur série'
