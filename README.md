@@ -207,15 +207,17 @@ Mettez exactement les mêmes noms aux commandes, elle sont utilisées dans le sc
 Noter l'id du scenario affiché dans le nom de l'onglet : Général (ID : 1)
 ![Scenation Code](docs/jeedom/scenario_code.png)
 Cliquer sur 'Ajouter un bloc' et choisissez 'Code'
+
 Le code complet est accéssible avec le lien ci-dessous : faites un copier puis un coller dans le code du sénario
 [Code complet du Scenario](docs/jeedom/scenario_code.txt)
+
 Si vous cliquer sur le bouton Exécuter du sénario, le sénario fonctionnera mais indiquera dans les logs qu'il ne trouve pas les Tag
 C'est normal, le bouton exécuter ne passe aucun Tag au sénario, il faut utiliser l'url ci-dessous pour envoyer les tags
 
-Url de test du scenario
+Url de test du scénario
 http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=temp%3D19.4%20hum%3D50%20targ%3D19.2%20item%3D2%20rel1=0&apikey=sa3WxxxxxxxxxxxxxxxxxxxxxxxOJcYC
 
-- Cette url de test permet de test la bonne configuration du virtuel WifiThermostat et du scenario WifiThermostat
+- Cette url de test permet de test la bonne configuration du virtuel WifiThermostat et du scénario WifiThermostat
 - Remplacer dans l'url ci-dessus l'adresse IP par celle de votre jeedom
 - Remplacer dans l'url ci-dessus la valeur de apikey par l' API Key du core de votre jeedom (Réglages/Système/Configuration : Onglet API : Première ligne : clé API  )
 - Remplacer dans l'url ci-dessus id=1 en mettant l'ID de votre sénario : ex : id=3 si ID : 3 dans le nom de l'onglet du sénario WifiThermostat
@@ -223,7 +225,7 @@ http://192.168.1.32:80/core/api/jeeApi.php?type=scenario&id=1&action=start&tags=
   - Ne doit pas contenir d'espace : c'est %20 qui sépare les tags (c'est le séparateur entre les tags)
   - Ne doit pas contenir de '=' : c'est %3D qui le remplace (%3D est le code ascii de '=') 
 
-![Senario Logs](docs/jeedom/scenario_log.png)
+![Scénario Logs](docs/jeedom/scenario_log.png)
 ![Scenation Code](docs/jeedom/scenario_code.png)
 
 ### Configuration du Thermostat 
