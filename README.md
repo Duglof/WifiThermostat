@@ -80,6 +80,7 @@ WifiThermostat for ESP8266 or ESP32
   - Attention ESP ne supporte pas 5V : les relais 5V commandés pas un niveau bs ne conviennent pas
 
 - Possible ajout petit afficheur OLED en SPI (SDA,SCL)
+  - A ce jour, le code pour l'afficheur n'existe pas
 
 Sous réserve de tests
 
