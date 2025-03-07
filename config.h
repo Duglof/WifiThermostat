@@ -34,7 +34,7 @@
 #define CFG_MQTT_DEFAULT_HOST   "monserveur.org"
 #define CFG_MQTT_DEFAULT_PSWD   "password"
 #define CFG_MQTT_DEFAULT_USER   "user"
-#define CFG_MQTT_DEFAULT_TOPIC  "CLIMATE"
+#define CFG_MQTT_DEFAULT_TOPIC  "WIFI-THERMOSTAT"
 #define CFG_MQTT_DEFAULT_PORT   1883
 
 #define MQTT_TEMPERATURE_TOPIC  "sensor/temperature"
