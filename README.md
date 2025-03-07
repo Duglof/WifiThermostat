@@ -23,6 +23,7 @@ WifiThermostat for ESP8266 or ESP32
 - Si aucune plage ne correspond, c'est la température par défaut qui est utilisée
 - Envoi possible des données vers jeedom 
 - Envoi possible des données à un serveur MQTT
+- Modification de la configuration via le serveur MQTT
 - Envoi possible d'un requète http
   - Données envoyées :
     - %TEMP% : Température
@@ -175,7 +176,22 @@ Sous réserve de tests
 
 # Tests
 ## Tests Mqtt
+#### Mqtt published values
 ![Tests Mqtt](docs/WifiThermostat-mqtt-test.png)
+| Topic                              | Donnée             | Commentaire             |
+|------------------------------------|--------------------|-------------------------|
+| WIFI-THERMOSTAT/sensor/temp        | Température        | Celsius or Fahrenheit   |
+| WIFI-THERMOSTAT/sensor/hum         | Humidité           | [0-100]% or -1 if none  |                     
+| WIFI-THERMOSTAT/thermostat/target  | Consigne           | Celsius or Fahrenheit   |
+| WIFI-THERMOSTAT/thermostat/prognum | N° ligne programme | [0-27] -1 if none       |
+| WIFI-THERMOSTAT/thermostat/mode    | Mode               | off/antifrost/heat/cool |
+| WIFI-THERMOSTAT/thermostat/config  | Config             | manu/prog               |
+
+#### Mqtt update command
+| Topic                              | Donnée             | Commentaire             |
+|------------------------------------|--------------------|-------------------------|
+| WIFI-THERMOSTAT/set/setmode        | Mode               | off/antifrost/heat/cool |
+| WIFI-THERMOSTAT/set/setconfig      | Config             | manu/prog               |
 
 ## Test Jeedom (Core V4.4.19)
 ### Configuration de votre jeedom
