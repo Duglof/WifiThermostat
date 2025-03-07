@@ -41,6 +41,8 @@
 #define MQTT_HUMIDITY_TOPIC     "sensor/humidity"
 #define MQTT_THERMOSTAT_TARGET  "thermostat/target"
 #define MQTT_THERMOSTAT_PROGNUM "thermostat/prognum"
+#define MQTT_THERMOSTAT_MODE    "thermostat/mode"
+#define MQTT_THERMOSTAT_CONFIG  "thermostat/config"
 
 #define CFG_JDOM_HOST_SIZE      32
 #define CFG_JDOM_APIKEY_SIZE    64
@@ -160,6 +162,7 @@ typedef struct {
   int16_t   t_temp;                      // Température de consigne (positive ou négative)
 } _program;
 
+// ================== THERMOSTAT MODE ====================
 enum _t_mode {
   t_mode_off = 0,
   t_mode_horsgel,
@@ -167,6 +170,7 @@ enum _t_mode {
   t_mode_cool,
 };
 
+// ================== THERMOSTAT CONFIG ==================
 enum _t_config {
   t_config_manu = 0,
   t_config_program,
@@ -251,11 +255,13 @@ extern _Config config;
 
 #pragma pack(pop)
  
-// Declared exported function from route.cpp
+// Declared exported function
 // ===================================================
-bool readConfig(bool clear_on_error=true);
-bool saveConfig(void);
-void showConfig(void);
-
-
+extern bool readConfig(bool clear_on_error=true);
+extern bool saveConfig(void);
+extern void showConfig(void);
+extern const char *t_mode_str[];
+extern const char *t_config_str[];
+extern int sizeof_t_mode_str;
+extern int sizeof_t_config_str;
 #endif 

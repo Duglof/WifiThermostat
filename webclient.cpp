@@ -59,62 +59,6 @@ boolean httpPost(char * host, uint16_t port, char * url, char * data)
 }
 
 /* ======================================================================
-Function: build_mqtt_json string (usable by webserver.cpp)
-Purpose : construct the json part of mqtt url
-Input   : -
-Output  : String if some Teleinfo data available
-Comments: -
-====================================================================== */
-// Non utilisé : mqtt data sent by DataCallback()
-/* exemple data
- *  From https://forum.hacf.fr/t/mqtt-instable-linky/21008
- * {« TIC »:{« ADSC »:« 0222761xxxx »,« VTIC »:2,« NGTF »:« TEMPO »,« LTARF »:« HP BLEU »,« EAST »:999935,« EASF01 »:834119,« EASF02 »:30571,« EASF03 »:60434,« EASF04 »:58796,« EASF05 »:8101,« EASF06 »:7914,« EASF07 »:0,« EASF08 »:0,« EASF09 »:0,« EASF10 »:0,« EASD01 »:902654,« EASD02 »:97281,« EASD03 »:0,« EASD04 »:0,« IRMS1 »:2,« IRMS2 »:1,« IRMS3 »:1,« URMS1 »:239,« URMS2 »:240,« URMS3 »:238,« PREF »:12,« PCOUP »:12,« SINSTS »:659,« SINSTS1 »:378,« SINSTS2 »:125,« SINSTS3 »:154,« SMAXSN »:7270,« SMAXSN1 »:2850,« SMAXSN2 »:2110,« SMAXSN3 »:2300,« SMAXSN-1 »:7190,« SMAXSN1-1 »:2830,« SMAXSN2-1 »:2090,« SMAXSN3-1 »:2300,« CCASN »:528,« CCASN-1 »:522,« UMOY1 »:239,« UMOY2 »:240,« UMOY3 »:238,« STGE »:« 013A4401 »,« DPM1 »:0,« FPM1 »:0,« PRM »:2147483647,« RELAIS »:0,« NTARF »:2,« NJOURF »:0,« NJOURF+1 »:0,« PPOINTE »:« 00004003 06004004 16004003 NONUTILE NONUTILE NONUTILE NONUTILE NONUTILE NONUTILE NONUTILE NONUTILE »,« SINTS3 »:180,« UMS1 »:241,« ESD02 »:88269}}
-*/
-
-/*
-String build_mqtt_json(void)
-{
-  boolean first_item = true;
-  boolean skip_item;
-
-  String mqtt_data = "{\"TIC\":{" ;
-
-  ValueList * me = tinfo.getList();
-
-      // Loop thru the node
-      while (me->next) {
-        // go to next node
-        me = me->next;
-        skip_item = false;
-
-        // Si Item virtuel, on le met pas
-        if (*me->name =='_')
-          skip_item = true;
-
-        // On doit ajouter l'item ?
-        if (!skip_item) {
-          if (first_item) {
-            first_item = false; 
-            mqtt_data += "\"";
-          } else {
-            mqtt_data += ",\"";
-          }
-          mqtt_data += String(me->name);
-          mqtt_data += "\":\"";
-          mqtt_data += String(me->value);
-          mqtt_data += "\"";
-        }
-      } // While me
-      // Json end
-      mqtt_data += "}}";
-      Debugln(mqtt_data);
-      
-  return mqtt_data;
-}
-*/
-
-
-/* ======================================================================
 Function: jeedomPost
 Purpose : Do a http post to jeedom server
 Input   : 

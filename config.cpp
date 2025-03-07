@@ -8,8 +8,30 @@
 
 #include "config.h" 
 
+// =======================================================
 // Configuration structure for whole program
+// =======================================================
+
+// Config values
 _Config config;
+
+// ================== THERMOSTAT MODE ====================
+const char *t_mode_str[] = {
+  "off",
+  "antifrost",
+  "heat",
+  "cool",
+};
+
+int sizeof_t_mode_str = sizeof(t_mode_str) / sizeof(t_mode_str[0]);
+
+// ================== THERMOSTAT CONFIG ==================
+const char *t_config_str[] = {
+    "manu",
+    "prog",
+};
+
+int sizeof_t_config_str = sizeof(t_config_str) / sizeof(t_config_str[0]);
 
 
 uint16_t crc16Update(uint16_t crc, uint8_t a)

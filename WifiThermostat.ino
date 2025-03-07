@@ -46,10 +46,7 @@
 // Global project file
 #include "WifiTherm.h"
 
-// PubSubClient V3.0.2 : https://github.com/hmueller01/pubsubclient3/releases/tag/v3.0.2
-// The maximum message size, including header, is 256 bytes by default. This is configurable via MQTT_MAX_PACKET_SIZE in PubSubClient.h
-// Better define : client.setBufferSize(512);
-#include <PubSubClient.h> //attention mettre #define MQTT_MAX_PACKET_SIZE 512, sinon le payload data ne se raffraichit pas.
+#include "mqtt.h"
 #include <ArduinoOTA.h>
 #include <EEPROM.h>
 #include <Ticker.h>
@@ -133,14 +130,13 @@ enum _t_errors {
 int16_t   t_current_temp = 0;             // Temperature en dixième de degré : 175 = 17.5°C
 int16_t   t_current_hum = 45;              // Humidité de 0 à 100%
 int16_t   t_target_temp = 175;            // Temperature en dixième de degré : 175 = 17.5°C
-int16_t   t_current_prog_item = -1;       // -1 = none : value [0..(CFG_THER_PROG_COUNT-1)] : 0 = 1ère ligne
+int16_t   t_current_prog_item = -2;       // -1 = none : value [0..(CFG_THER_PROG_COUNT-1)] : 0 = 1ère ligne (-2 undefined at startup)
 int8_t    t_relay_status = 0;             // 0 = off, 1 = on
 int8_t    t_errors = t_error_none;        // Erreurs : ex : t_error_reading_sensor
+uint8_t   t_mode = -1;                    // current thermostat mode (undefined at startup)
+uint8_t   t_config = -1;                  // current thermostat config (undefined at startup)
 
-//Client Mqtt
-WiFiClient MqttClient;
-PubSubClient MQTTclient(MqttClient);
-bool Mqtt_Init=0;
+MQTT  mqtt;
 
 NTP ntp;
 
@@ -709,39 +705,6 @@ int WifiHandleConn(boolean setup = false)
   return WiFi.status();
 }
 
-/*
- * boolean mqttConnect
- * 
- * return true if connection ok else false
- */
-
-boolean mqttConnect() {
-  boolean ret = false;
-
-    DebugF("Connexion au serveur MQTT... ");
-
-    if ( WiFi.status() == WL_CONNECTED){
-      //DebugF ("execution tache MQTT / wifi connecté Init mqtt=");
-      //Debugln (Mqtt_Init);
-      if (!Mqtt_Init){
-        MQTTclient.setServer(config.mqtt.host, config.mqtt.port);    //Configuration de la connexion au serveur MQTT
-        MQTTclient.setCallback(Mqttcallback);  //La fonction de callback qui est executée à chaque réception de message  
-        Mqtt_Init=1; 
-      }
-      ret = MQTTclient.connected();
-      if (!ret) {
-        //Debugln ("demande de connexion MQTT");
-        ret = MQTTclient.connect(config.mqtt.topic, config.mqtt.user, config.mqtt.pswd);
-      }
-    }
-
-    if (ret) {
-      DebuglnF("OK");
-    } else {
-      DebuglnF("KO");
-    }
-    return(ret);
-}
 
 /* ======================================================================
 Function: mqttStartupLogs (called one at startup, if mqtt activated)
@@ -767,7 +730,7 @@ boolean ret = false;
         Debug(topic);
         Debug( " value ");
         Debug(payload);
-        ret = MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
+        ret = mqtt.Publish(topic.c_str(), payload.c_str() , true);      
         if (ret)
           Debugln(" OK");
         else
@@ -782,7 +745,7 @@ boolean ret = false;
         Debug(topic);
         Debug( " value ");
         Debug(payload);
-        ret &= MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
+        ret &= mqtt.Publish(topic.c_str(), payload.c_str() , true);      
         if (ret)
           Debugln(" OK");
         else
@@ -801,7 +764,7 @@ boolean ret = false;
           Debug(topic);
           Debug( " value ");
           Debug(payload);
-          ret &= MQTTclient.publish(topic.c_str(), payload.c_str() , true);      
+          ret &= mqtt.Publish(topic.c_str(), payload.c_str() , true);      
           if (ret)
             Debugln(" OK");
           else
@@ -828,7 +791,7 @@ boolean ret = false;
 
   // Some basic checking
   if (config.mqtt.freq != 0) {
-    Debug("mqttPost publish ");
+    Debug("mqtt.Publish ");
     if (*config.mqtt.host) {
         
       if (*config.mqtt.topic) {
@@ -839,7 +802,7 @@ boolean ret = false;
         Debug( " value = '");
         Debug(i_value);
         // And submit to mqtt
-        ret = MQTTclient.publish(topic.c_str(), i_value.c_str() , true);             
+        ret = mqtt.Publish(topic.c_str(), i_value.c_str() , true);             
         if (ret)
           Debugln("' OK");
         else
@@ -855,20 +818,23 @@ boolean ret = false;
 }
 
 /* ======================================================================
-Function: Mqttcallback
+Function: mqttCallback
 Purpose : Déclenche les actions à la réception d'un message mqtt
           D'après http://m2mio.tumblr.com/post/30048662088/a-simple-example-arduino-mqtt-m2mio
-Input   : topic
-          payload
-          length
+Input   : topic (complete topic string : ex : CLIMATE/set/setmode)
+          payload 
+          length (of the payload)
 Output  : - 
-Comments: -
+Comments: For topic = 'CLIMATE' in WifiThermostat Setup mqtt 
+            All mqtt message with topic like CLIMATE/set/# will be received
+            ex : Message arrived on topic CLIMATE : [CLIMATE/set/setmode], 2
+
 ====================================================================== */
-void Mqttcallback(char* topic, byte* payload, unsigned int length) {
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
 
 
  #ifdef DEBUG 
-   Debug("Mqttcallback : Message recu =>  topic: ");
+   Debug("mqttCallback : Message recu =>  topic: ");
    Debug(String(topic));
    Debug(" | longueur: ");
    Debugln(String(length,DEC));
@@ -876,27 +842,52 @@ void Mqttcallback(char* topic, byte* payload, unsigned int length) {
 
   String mytopic = (char*)topic;
   payload[length] = '\0'; // Null terminator used to terminate the char array
-  String message = (char*)payload;
-
+  String  message = (char*)payload;
+  bool    ret = false;
+  int     i;
+  
   Debug("Message arrived on topic: [");
   Debug(mytopic);
   Debug("], ");
   Debugln(message);
 
-  Debugln("Mqttcallback : à compléter ...");
-  
-  // if (mytopic==(String)config.mqtt.topic + "/write/config") {    
-    // update config.thermostat.config
-  //}
-  //if (mytopic==(String)config.mqtt.topic + "/write/mode") {
-    // update config.thermostat.mode
-  //}
-  //if (mytopic==(String)config.mqtt.topic + "/write/target_heat") {
-    // update config.thermostat.t_manu_heat
-  //}
-  //if (mytopic==(String)config.mqtt.topic + "/write/target_cool") {
-    // update config.thermostat.t_manu_cool
-  //}
+  Debugln("mqttCallback : à compléter ...");
+
+  // ========================================
+  // Update config.thermostat.mode via mqtt
+  // ========================================
+  if (mytopic.indexOf("setmode") >= 0) {
+    for ( i = 0 ; i < sizeof_t_mode_str ; i++) {
+      Debugf("i = %d message = %s t_mode_str[i] = %s\r\n",i,message.c_str(), t_mode_str[i]);
+      if (message == String(t_mode_str[i])) {
+        config.thermostat.mode = i;
+        ret = true;
+        Debugf("mqttCallback setmode %d\r\n", config.thermostat.mode); 
+        break;
+      }
+    }
+    if (!ret) {
+      Debugf("mqttCallback setmode %s : invalid\r\n", message.c_str()); 
+    }       
+  }
+
+  // ========================================
+  // Update config.thermostat.config via mqtt
+  // ========================================
+  if (mytopic.indexOf("setconfig") >= 0) {
+    for ( i = 0 ; i < sizeof_t_config_str ; i++) {
+      Debugf("i = %d message = %s t_config_str[i] = %s\r\n",i,message.c_str(), t_config_str[i]);
+      if (message == String(t_config_str[i])) {
+        config.thermostat.config = i;
+        ret = true;
+        Debugf("mqttCallback setconfig %d\r\n", config.thermostat.config); 
+        break;
+      }
+    }
+    if (!ret) {
+      Debugf("mqttCallback setconfig %s : invalid\r\n", message.c_str()); 
+    }       
+  }
   
 }
 
@@ -1248,7 +1239,7 @@ void setup()
   // Mqtt Update if needed
   if (config.mqtt.freq) {
     Tick_mqtt.attach(config.mqtt.freq, Task_mqtt);
-    mqttConnect();
+    mqtt.Connect(mqttCallback, config.mqtt.host, config.mqtt.port, config.mqtt.topic, config.mqtt.user, config.mqtt.pswd,true);
     mqttStartupLogs();  //send startup logs to mqtt
   }
   
@@ -1609,6 +1600,9 @@ int16_t  new_target;
   // Only once task per loop, let system do it own task
   if (task_1_sec) { 
     UpdateSysinfo(false, false); 
+    if (config.mqtt.freq) {
+      mqtt.Loop();              // Called for receive subscribe updates
+    }
     task_1_sec = false; 
 
   } else if (task_1_min) {
@@ -1632,11 +1626,28 @@ int16_t  new_target;
       t_target_temp = new_target;
       t_current_prog_item = new_prog_item;
       if (config.mqtt.freq) {
-        mqttConnect();
+        mqtt.Connect(mqttCallback, config.mqtt.host, config.mqtt.port, config.mqtt.topic, config.mqtt.user, config.mqtt.pswd,true);
         mqttPost(MQTT_THERMOSTAT_TARGET,tempConfigToDisplay(t_target_temp)); 
         mqttPost(MQTT_THERMOSTAT_PROGNUM,String(t_current_prog_item));
       }
     }
+
+    // ======= get thermostat mode from config ========
+    if (t_mode != config.thermostat.mode) {
+      t_mode = config.thermostat.mode;
+      if (config.mqtt.freq) {
+        mqttPost(MQTT_THERMOSTAT_MODE, t_mode_str[config.thermostat.mode]);
+      }
+    }
+
+    // ====== get thermostat config from config ======
+    if (t_config != config.thermostat.config) {
+      t_config = config.thermostat.config;
+      if (config.mqtt.freq) {
+        mqttPost(MQTT_THERMOSTAT_CONFIG, t_config_str[config.thermostat.config]);
+      }
+    }
+
 
     // ====== update relay status ==========
     bool relay_status = get_relais_status(new_temp,new_target, config.thermostat.hysteresis);
@@ -1655,7 +1666,7 @@ int16_t  new_target;
     // Envoi péroidique temp & hum par mqttPost()
     // -------------------------------
     //gestion connexion Mqtt
-    mqttConnect();
+    mqtt.Connect(mqttCallback, config.mqtt.host, config.mqtt.port, config.mqtt.topic, config.mqtt.user, config.mqtt.pswd,true);
     // Mqtt Publier les données; 
     mqttPost(MQTT_TEMPERATURE_TOPIC,tempConfigToDisplay(t_current_temp)); 
     mqttPost(MQTT_HUMIDITY_TOPIC,String(t_current_hum)); 
