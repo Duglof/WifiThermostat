@@ -42,7 +42,7 @@ WifiThermostat for ESP8266 or ESP32
     - %REL1% : Etat du relais du thermostat ( 0 = Off ; 1 = On)  
 - Mise à jour via OTA (Wifi)
   - La mise à jour de logiciel peut être effectué via wifi (sans connecter la prise usb du module esp
-  - La procédure est décrite dans mon autre projet github : Wifinfo
+  - La procédure est décrite dans mon autre projet github : LibTeleinfo
 
 # Hardware
 
