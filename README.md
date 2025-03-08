@@ -14,16 +14,25 @@ WifiThermostat for ESP8266 or ESP32
   - China Standard Time : "CST-8CDT-8,M4.2.0/2,M9.2.0/3"
 - Gestion automatique de l'heure été/hiver via la Time Zone configurée
 - Paramètrage du serveur de temps (ntp)
-- 28 plages horaires au total
+- 4 modes de fonctionnement :
+  - off : le thermostat est arrếté
+  - antifrost : le thermostat maintient la température anti gel paramétrée dans la config
+  - heat : le thermostat est en mode chauffage (activation relais si température en dessous de la consigne)
+  - cool : le thermostat est en mode climatisation (activation relais si température en dessus de la consigne)
+- 2 configurations :
+  - manu : la consigne est fixe et celle programmé dans la config
+  - prog : la consigne est fixé par le programme 
+- 2 programmes : un pour le chauffage et un programme pour la climatisation
+- 28 plages horaires par programme
 - Chaque plage peut être attribuée à 1 ou plusieurs jours (jusqu'à 7)
   - Une plage peut être affectée à un seul jour
   - Une plage peut être affectée du Lundi au Vendredi
   - Une plage peut être affectée au Week End
   - Pour un plage on coche les jours concernés
-- Si aucune plage ne correspond, c'est la température par défaut qui est utilisée
+- Si aucune plage ne correspond, c'est la température par défaut du programme qui est utilisée
 - Envoi possible des données vers jeedom 
 - Envoi possible des données à un serveur MQTT
-- Modification de la configuration via le serveur MQTT
+- Modification de la configuration via le serveur MQTT (setmode et setconfig)
 - Envoi possible d'un requète http
   - Données envoyées :
     - %TEMP% : Température
@@ -31,7 +40,9 @@ WifiThermostat for ESP8266 or ESP32
     - %TARG% : Consigne (target)
     - %ITEM% : Numéro de ligne en cours du programme (-1 si température par défaut du programme)
     - %REL1% : Etat du relais du thermostat ( 0 = Off ; 1 = On)  
-- Mise à jour via OTA (Wifi) 
+- Mise à jour via OTA (Wifi)
+  - La mise à jour de logiciel peut être effectué via wifi (sans connecter la prise usb du module esp
+  - La procédure est décrite dans mon autre projet github : Wifinfo
 
 # Hardware
 
