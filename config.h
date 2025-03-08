@@ -43,6 +43,7 @@
 #define MQTT_THERMOSTAT_PROGNUM "thermostat/prognum"
 #define MQTT_THERMOSTAT_MODE    "thermostat/mode"
 #define MQTT_THERMOSTAT_CONFIG  "thermostat/config"
+#define MQTT_THERMOSTAT_RELAY_1 "thermostat/relay1"
 
 #define CFG_JDOM_HOST_SIZE      32
 #define CFG_JDOM_APIKEY_SIZE    64
@@ -262,6 +263,8 @@ extern bool saveConfig(void);
 extern void showConfig(void);
 extern const char *t_mode_str[];
 extern const char *t_config_str[];
+extern const char *t_relay_status_str[];
 extern int sizeof_t_mode_str;
 extern int sizeof_t_config_str;
+
 #endif 

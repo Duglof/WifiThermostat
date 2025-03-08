@@ -33,6 +33,15 @@ const char *t_config_str[] = {
 
 int sizeof_t_config_str = sizeof(t_config_str) / sizeof(t_config_str[0]);
 
+// ================= THERMOSTAT RELAY STATUS ==================
+const char *t_relay_status_str[] = {
+    "off",
+    "on",
+};
+
+int sizeof_t_relay_status_str = sizeof(t_relay_status_str) / sizeof(t_relay_status_str[0]);
+
+
 
 uint16_t crc16Update(uint16_t crc, uint8_t a)
 {

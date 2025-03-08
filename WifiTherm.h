@@ -61,9 +61,26 @@ extern "C" {
 #include "config.h"
 
 //=====================================================
+// Décommenter DEBUG pour une version capable d'afficher du Debug
+//  sur le port USB (Serial)
+// Arduino IDE : Outils/Moniteur série
+//=====================================================
+
+#define DEBUG
+
+//=====================================================
+// Décommenter SYSLOG pour une version capable d'envoyer du Debug
+//  vers un serveur rsyslog du réseau
+//=====================================================
+
+// #define SYSLOG
+
+//=====================================================
 // Temperature Sensors
 // Define only one sensor type
 //=====================================================
+// Décommenter l'un des 4 en fonction du capteur de température utilisé
+// 
 // Décommenter THER_SIMU (et commenter les autres) pour compiler une version de test
 // Le thermostat ne lit plus le capteur de température / humidité
 // Les valeurs affichée sont des valeurs simulées
@@ -120,16 +137,6 @@ extern "C" {
 // #define RED_LED_PIN    14
 
 #define BLINK_LED_MS   50 // 50 ms blink
-
-
-// Décommenter DEBUG pour une version capable d'afficher du Debug
-//  sur Serial
-#define DEBUG
-
-// Décommenter SYSLOG pour une version capable d'envoyer du Debug
-//  vers un serveur rsyslog du réseau
-// #define SYSLOG
-
 
 
 // ESP8266 ESP32

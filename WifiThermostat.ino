@@ -128,10 +128,10 @@ enum _t_errors {
 
 // Thermostat informations
 int16_t   t_current_temp = 0;             // Temperature en dixième de degré : 175 = 17.5°C
-int16_t   t_current_hum = 45;              // Humidité de 0 à 100%
+int16_t   t_current_hum = 0;              // Humidité de 0 à 100%
 int16_t   t_target_temp = 175;            // Temperature en dixième de degré : 175 = 17.5°C
 int16_t   t_current_prog_item = -2;       // -1 = none : value [0..(CFG_THER_PROG_COUNT-1)] : 0 = 1ère ligne (-2 undefined at startup)
-int8_t    t_relay_status = 0;             // 0 = off, 1 = on
+int8_t    t_relay_status = -1;            // 0 = off, 1 = on (undefined at startup)
 int8_t    t_errors = t_error_none;        // Erreurs : ex : t_error_reading_sensor
 uint8_t   t_mode = -1;                    // current thermostat mode (undefined at startup)
 uint8_t   t_config = -1;                  // current thermostat config (undefined at startup)
@@ -1652,11 +1652,15 @@ int16_t  new_target;
       }
     }
 
-
     // ====== update relay status ==========
     bool relay_status = get_relais_status(new_temp,new_target, config.thermostat.hysteresis);
 
-    t_relay_status = relay_status;
+    if (t_relay_status != relay_status) {
+      t_relay_status = relay_status;
+      if (config.mqtt.freq) {
+        mqttPost(MQTT_THERMOSTAT_RELAY_1, t_relay_status_str[t_relay_status]);
+      }
+    }
 
     // Update relay
     if (t_relay_status)
