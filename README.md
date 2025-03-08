@@ -97,7 +97,7 @@ Sous réserve de tests
 
 ## Relay Interface
 ### Version 1
-![Relay Interface V1](relay_wemos_mini_D1.jpg)
+![Relay Interface V1](docs/relay_wemos_mini_D1.jpg)
 
 - C'est une version conçue spécialement pour ESP8266 Wemos D1 mini
 - Elle se branche directment (ESP32 aussi).
