@@ -88,7 +88,7 @@ WifiThermostat for ESP8266 or ESP32
 - BME/BMP280 BME 680 : (GND -> GND ; VCC -> 3.3V) 
 - HTU21              : (GND -> GND ; VCC -> 3.3V) 
 - RELAY              : 5V Relay Module (DC- -> -Vo ; DC+ -> +Vo)
-  - Attention ESP ne supporte pas 5V : les relais 5V commandés pas un niveau bs ne conviennent pas
+  - Attention ESP ne supporte pas 5V : Relais 5V commandés pas un niveau bas à interfacer avec un opto-coupleur (schéma ci-dessous)
 
 - Possible ajout petit afficheur OLED en SPI (SDA,SCL)
   - A ce jour, le code pour l'afficheur n'existe pas
@@ -96,11 +96,12 @@ WifiThermostat for ESP8266 or ESP32
 Sous réserve de tests
 
 ## Relay Interface
-![Relay Interface]()docs/relay_interface.jpg)
+![Relay Interface](docs/relay_interface.jpg)
 
 - L'esp8266 ou ESP32 fonctionne en 3.3V alors que le relais est en 5V.
 - Ajout d'un opto coupleur LTV 814 et d'une résistance de 1K pour l'interface
 - A la mise sous tension ou en l'absence de programme, le relais est à l'état inactif
+- Exemple de connexion à GPIO 12 pour un ESP8266 12F
 
 ## ESP8266 12E/12F
 
