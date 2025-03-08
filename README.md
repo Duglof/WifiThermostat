@@ -96,10 +96,18 @@ WifiThermostat for ESP8266 or ESP32
 Sous réserve de tests
 
 ## Relay Interface
-![Relay Interface](docs/relay_interface.jpg)
+### Version 1
+![Relay Interface V1](relay_wemos_mini_D1.jpg)
+
+- C'est une version conçue spécialement pour ESP8266 Wemos D1 mini
+- Elle se branche directment (ESP32 aussi).
+
+### Version 2
+![Relay Interface V2](docs/relay_interface.jpg)
 
 - L'esp8266 ou ESP32 fonctionne en 3.3V alors que le relais est en 5V.
-- Ajout d'un opto coupleur LTV 814 et d'une résistance de 1K pour l'interface
+- Ajout d'un opto-coupleur LTV 814 et d'une résistance de 1K pour l'interface
+- Quand la sortie GPIO passe au niveau 1 (3.3V) le relais passe à l'état actif
 - A la mise sous tension ou en l'absence de programme, le relais est à l'état inactif
 - Exemple de connexion à GPIO 12 pour un ESP8266 12F
 
