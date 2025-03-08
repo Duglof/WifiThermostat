@@ -95,6 +95,13 @@ WifiThermostat for ESP8266 or ESP32
 
 Sous réserve de tests
 
+## Relay Interface
+![Relay Interface]()docs/relay_interface.jpg)
+
+- L'esp8266 ou ESP32 fonctionne en 3.3V alors que le relais est en 5V.
+- Ajout d'un opto coupleur LTV 814 et d'une résistance de 1K pour l'interface
+- A la mise sous tension ou en l'absence de programme, le relais est à l'état inactif
+
 ## ESP8266 12E/12F
 
 [esp8266 12e 12f](docs/esp12e-gpio.png)
