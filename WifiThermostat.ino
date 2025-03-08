@@ -851,44 +851,48 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   Debug("], ");
   Debugln(message);
 
-  Debugln("mqttCallback : à compléter ...");
-
   // ========================================
   // Update config.thermostat.mode via mqtt
   // ========================================
   if (mytopic.indexOf("setmode") >= 0) {
     for ( i = 0 ; i < sizeof_t_mode_str ; i++) {
-      Debugf("i = %d message = %s t_mode_str[i] = %s\r\n",i,message.c_str(), t_mode_str[i]);
+      // Debugf("i = %d message = %s t_mode_str[i] = %s\r\n",i,message.c_str(), t_mode_str[i]);
       if (message == String(t_mode_str[i])) {
         config.thermostat.mode = i;
         ret = true;
-        Debugf("mqttCallback setmode %d\r\n", config.thermostat.mode); 
+        Debugf("mqttCallback setmode %s (%d)\r\n", t_mode_str[i], config.thermostat.mode); 
         break;
       }
     }
     if (!ret) {
       Debugf("mqttCallback setmode %s : invalid\r\n", message.c_str()); 
     }       
-  }
+  } else
 
   // ========================================
   // Update config.thermostat.config via mqtt
   // ========================================
   if (mytopic.indexOf("setconfig") >= 0) {
     for ( i = 0 ; i < sizeof_t_config_str ; i++) {
-      Debugf("i = %d message = %s t_config_str[i] = %s\r\n",i,message.c_str(), t_config_str[i]);
+      // Debugf("i = %d message = %s t_config_str[i] = %s\r\n",i,message.c_str(), t_config_str[i]);
       if (message == String(t_config_str[i])) {
         config.thermostat.config = i;
         ret = true;
-        Debugf("mqttCallback setconfig %d\r\n", config.thermostat.config); 
+        Debugf("mqttCallback setconfig %s (%d)\r\n", t_config_str[i], config.thermostat.config); 
         break;
       }
     }
     if (!ret) {
       Debugf("mqttCallback setconfig %s : invalid\r\n", message.c_str()); 
     }       
+  } else {
+    Debugf("mqttCallback invalid topic %s : invalid\r\n", mytopic.c_str()); 
   }
-  
+
+  if(ret) {
+    // Save new config in LittleFS file system
+    saveConfig();
+  }
 }
 
 
