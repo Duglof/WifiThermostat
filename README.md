@@ -103,6 +103,9 @@ Sous réserve de tests
 - Au vue des photos, il semblerait que le relais soit piloté par D1
 - Le relais est actif quand l'entrée de commande passe au niveau 1
 - Elle se branche directment (ESP32 aussi).
+- Il existe une version plus configurable appelée 'Bouclier relais V2.0.0 pour LOLIN (WEMOS) D1 mini'
+  - 7 IO configurables D0, D1, D2, D5, D6, D7, D8 (Par défaut : D1)
+  - Mais c'est uniquement si on veut le plugger directement sur un Wemos D1 mini sinon on connecte D1 du relais sur le GPIO de son choix
 
 ### Version 2
 ![Relay Interface V2](docs/relay_interface.jpg)
