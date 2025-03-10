@@ -182,7 +182,7 @@ Sous réserve de tests
 ![Etat du thermostat en](docs/web-thermostat-state-en.jpg)
 
 ## Données du système
-![Données du système](docs/web-thermostat-system.jpg)
+![Données du système](docs/web-thermostat-system.png)
 
 ## Programme de chauffage (28 plages)
 ![Programme de chauufage](docs/web-thermostat-prog-heat.png)

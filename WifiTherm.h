@@ -73,7 +73,7 @@ extern "C" {
 //  vers un serveur rsyslog du réseau
 //=====================================================
 
-// #define SYSLOG
+#define SYSLOG
 
 //=====================================================
 // Temperature Sensors
@@ -251,6 +251,7 @@ void Task_httpRequest();
 // Exported function located in webserver
 // ===================================================
 extern String tempConfigToDisplay(int16_t i_temp);
+extern String get_t_errors_str();
 
 #ifdef SYSLOG
 void Myprint(void);
@@ -259,6 +260,8 @@ void Myprint(const char *msg);
 void Myprint(String msg);
 void Myprint(int i);
 void Myprint(unsigned int i);
+void Myprint(float i);
+void Myprint(double i);
 void Myprintf(const char * format, ...);
 void Myprintln(void);
 void Myprintln(char *msg);
@@ -268,6 +271,8 @@ void Myprintln(const __FlashStringHelper *msg);
 void Myprintln(int i);
 void Myprintln(unsigned int i);
 void Myprintln(unsigned long i);
+void Myprintln(float i);
+void Myprintln(double i);
 void Myflush(void);
 #endif  // SYSLOG
 

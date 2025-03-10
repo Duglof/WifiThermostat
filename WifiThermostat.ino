@@ -52,6 +52,8 @@
 #include <Ticker.h>
 #include "relay.h"
 
+bool get_temp_hum_from_sensor(int16_t & o_temp, int16_t & o_hum);
+
 #ifdef THER_SIMU
 
   // Nothing
@@ -98,12 +100,9 @@ DigitalRelay  relay1;
 bool ota_blink;
 String optval;    // Options de compilation
 
-
-// define whole brigtness level for RGBLED (50%)
 // LED Blink timers
 Ticker rgb_ticker;
 Ticker blu_ticker;
-Ticker red_ticker;
 Ticker Every_1_Sec;
 Ticker Every_1_Min;
 Ticker Tick_mqtt;
@@ -115,7 +114,6 @@ volatile boolean task_1_min = false;
 volatile boolean task_mqtt = false;
 volatile boolean task_jeedom = false;
 volatile boolean task_httpRequest = false;
-volatile boolean task_updsw = false;
 unsigned long seconds = 0;                // Nombre de secondes depuis la mise sous tension
 
 // sysinfo data
@@ -123,8 +121,43 @@ _sysinfo sysinfo;
 
 enum _t_errors {
   t_error_none = 0,
-  t_error_reading_sensor = -1,
+  t_error_reading_sensor  = 0x01,         // Bit 0
+  t_error_send_mqtt       = 0x02,         // Bit 1
+  t_error_send_jeedom     = 0x04,         // Bit 2
+  t_error_send_http       = 0x08,         // Bit 3
 };
+
+/*
+ * String get_t_errors_str()
+ * 
+ * Return Thermostat errors in human string
+ */
+String get_t_errors_str()
+{
+String s;
+  if (t_errors == 0) {
+    s += "none";
+  }
+  if (t_errors & t_error_reading_sensor) {
+    s += "readSensor";
+  }
+  if (t_errors & t_error_send_mqtt) {
+    if (s.length())
+      s +=",";
+   s += "sendMqtt";  
+  }
+  if (t_errors & t_error_send_jeedom) {
+    if (s.length())
+      s +=",";
+   s += "SendJeedom";  
+  }
+  if (t_errors & t_error_send_http) {
+    if (s.length())
+      s +=",";
+   s += "SendHttp";  
+  }
+  return(s);
+}
 
 // Thermostat informations
 int16_t   t_current_temp = 0;             // Temperature en dixième de degré : 175 = 17.5°C
@@ -132,7 +165,7 @@ int16_t   t_current_hum = 0;              // Humidité de 0 à 100%
 int16_t   t_target_temp = 175;            // Temperature en dixième de degré : 175 = 17.5°C
 int16_t   t_current_prog_item = -2;       // -1 = none : value [0..(CFG_THER_PROG_COUNT-1)] : 0 = 1ère ligne (-2 undefined at startup)
 int8_t    t_relay_status = -1;            // 0 = off, 1 = on (undefined at startup)
-int8_t    t_errors = t_error_none;        // Erreurs : ex : t_error_reading_sensor
+int8_t    t_errors = 0;                   // Erreurs : bit field : ex : bit 0 : t_error_reading_sensor (no error at startup)
 uint8_t   t_mode = -1;                    // current thermostat mode (undefined at startup)
 uint8_t   t_config = -1;                  // current thermostat config (undefined at startup)
 
@@ -194,7 +227,7 @@ void process_line(char *msg) {
     // Si le dernier vaut CR ou LF ou buffer plein => on envoie le message
     if( waitbuffer[pending-1] == 0x0D || waitbuffer[pending-1] == 0x0A ) {
       //Cette ligne est complete : l'envoyer !
-      for(int i=0; i < pending-1; i++) {
+      for(unsigned int i=0; i < pending-1; i++) {
         if(waitbuffer[i] <= 0x20)
           waitbuffer[i] = 0x20;
       }
@@ -259,6 +292,18 @@ void Myprint(int i) {
 
 void Myprint(unsigned int i) {
   sprintf(logbuffer,"%u", i);
+  Myprint(logbuffer);
+}
+
+void Myprint(float i)
+{
+  sprintf(logbuffer,"%f", i);
+  Myprint(logbuffer);
+}
+
+void Myprint(double i)
+{
+  sprintf(logbuffer,"%lf", i);
   Myprint(logbuffer);
 }
 
@@ -331,6 +376,18 @@ void Myprintln(unsigned int i) {
 void Myprintln(unsigned long i)
 {
   sprintf(logbuffer,"%lu\n", i);
+  Myprint(logbuffer);
+}
+
+void Myprintln(float i)
+{
+  sprintf(logbuffer,"%f\n", i);
+  Myprint(logbuffer);
+}
+
+void Myprintln(double i)
+{
+  sprintf(logbuffer,"%lf\n", i);
   Myprint(logbuffer);
 }
 
@@ -443,6 +500,28 @@ void LedON(int led)
   #endif
 }
 
+// Set flash_blue_led_count to make BLU_LED flashing
+int flash_blue_led_count = 0;
+
+/* ======================================================================
+Function: void FlashBlueLed(int param)
+Input   : int param : not used
+Output  : -
+Comments: -
+====================================================================== */
+void FlashBlueLed(int param) // Non-blocking ticker for Blue LED
+{
+  if (flash_blue_led_count != 0) {
+    // Change state each call
+    int state = digitalRead(BLU_LED_PIN);   // get the current state of the blue_led pin
+    digitalWrite(BLU_LED_PIN, !state);      // set pin to the opposite state
+
+    // BLU_LED_PIN = HIGH => LED éteinte
+    if ((!state) == HIGH) {
+      flash_blue_led_count--;
+    }
+  }
+}
 
 /* ======================================================================
 Function: LedOFF 
@@ -462,7 +541,6 @@ void LedOFF(int led)
     LedRedOFF();
   #endif
 }
-
 
 /* ======================================================================
 Function: ResetConfig
@@ -1221,14 +1299,15 @@ void setup()
   // Light off
   LedOFF(BLU_LED_PIN);
 
+  // xxxxxxx to be completed : param 1 ????
+  blu_ticker.attach(1, FlashBlueLed, 1);
+
   // Update sysinfo every second
   Every_1_Sec.attach(1, Task_1_Sec);
 
   Every_1_Min.attach(60, Task_1_Min);
 
   // Init and get the time
-  // configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  // configTzTime(config.tz, ntpServer);
   ntp.begin(config.tz,config.ntp_server);
 
   struct tm timeinfo;
@@ -1266,14 +1345,8 @@ void setup()
 
   if (!sensors_ds18B20.getAddress(DS18B20_Address, 0)) { 
     Debugln("Unable to find address for DS28B20 0");
-    t_errors = t_error_reading_sensor;
-    t_current_temp = -1270;         // -127°C
-    t_current_hum = -1;
-  } else {
-    t_errors = t_error_none;
-    t_current_temp = sensors_ds18B20.getTempC(DS18B20_Address) * 10;
-    t_current_hum = -1;       // Pas d'humidité pour un DS18B20
   }
+  
 #endif
 
 #ifdef THER_BME280
@@ -1289,14 +1362,6 @@ void setup()
   if (!status) {
     Debugln("Could not find a valid BME280 sensor, check wiring, address and sensor ID!");
     Debugf("SensorIS id 0x%02x\n",bme280_SensorAddress);
-
-    t_errors = t_error_reading_sensor;
-    t_current_temp = -1270;         // -127°C
-    t_current_hum = -1;
-  } else {
-    t_errors = t_error_none;
-    t_current_temp = sensors_bme280.readTemperature() * 10;
-    t_current_hum = sensors_bme280.readHumidity();
   }
 #endif
 
@@ -1318,15 +1383,25 @@ void setup()
  
   if (isnan(intempC )) {
     Debugln("Check circuit. HTU21D not found!");
-    t_errors = t_error_reading_sensor;
-    t_current_temp = -1270;         // -127°C
-    t_current_hum = -1;
-  } else {
-    t_errors = t_error_none;
-    t_current_temp = sensors_htu.readTemperature() * 10;
-    t_current_hum = sensors_htu.readHumidity();
   }
 #endif
+
+  //===================================
+  // Get curent temp & hum
+  //===================================
+  int16_t  new_temp;
+  int16_t  new_hum;
+  
+  bool ret = get_temp_hum_from_sensor(new_temp, new_hum);
+  if (ret) {
+    t_errors &= ~t_error_reading_sensor;
+  } else {
+    t_errors |= t_error_reading_sensor;
+  }
+  // on met à jour direct
+  // Les valeurs seront envoyées pat mqtt dans une minute : pas grave
+  t_current_temp = new_temp;
+  t_current_hum = new_hum;
 
 }
 
@@ -1471,7 +1546,7 @@ int16_t  new_target_temp = config.thermostat.t_manu_heat;
   return(new_target_temp);
 }
 /*
- * bool get_temp_hum_from_sensor( &o_temp, &o_hum)
+ * bool get_temp_hum_from_sensor(int16_t & o_temp, int16_t & o_hum)
  * o_temp : temperture get from sensor (en dixième de degré (°C ou °F)
  * o_hum  : humidity get from sensor ( 0-100%)
  * 
@@ -1512,7 +1587,7 @@ bool ret = true;
   // ===================================================
   // Le capteur est en defaut à l'initialisation dans le setup()
   // il faut le re-initialiser
-  if (t_errors == t_error_reading_sensor) {
+  if (t_errors & t_error_reading_sensor) {
     // Try again init
     bool status = sensors_bme280.begin(bme280_SensorAddress);
     if (!status) {
@@ -1617,8 +1692,12 @@ int16_t  new_target;
     // ========== read sensor ==============
     ret = get_temp_hum_from_sensor(new_temp, new_hum);
     // to be modified xxxxxxxxxx
-    if ( ret == false)
-      t_errors = t_error_reading_sensor;
+    if (ret) {
+      t_errors &= ~t_error_reading_sensor;
+    } else {
+      t_errors |= t_error_reading_sensor;
+    }
+      
     t_current_temp = new_temp;
     t_current_hum = new_hum;
 
@@ -1662,29 +1741,75 @@ int16_t  new_target;
       }
     }
 
-    // Update relay
-    if (t_relay_status)
+    // Update relay (si t_error_reading_sensor on n'active pas le relais )
+    if (t_relay_status && (!(t_errors & t_error_reading_sensor)))
       relay1.On();
     else
       relay1.Off();
-    
+
+    Debugf("t_errors = %02x\r\n", t_errors);
+    mqttPost(MQTT_THERMOSTAT_ERRORS, get_t_errors_str().c_str());
+ 
+    // ==================================
+    // Gestion clignotement LED blue
+    // Blink only once ; all is ok
+    // ==================================
+    if (t_errors == 0) {
+      flash_blue_led_count = 1; 
+    } else { 
+      if (t_errors & t_error_reading_sensor) {
+        flash_blue_led_count = 2;
+      } else {
+        if (t_errors & t_error_send_mqtt) {
+          flash_blue_led_count = 3;
+        } else {
+          if (t_errors & t_error_send_jeedom) {
+            flash_blue_led_count = 4; 
+          } else {
+            if (t_errors & t_error_send_http) {
+              flash_blue_led_count = 5;
+            }
+          }
+        }  
+      }
+    }  
+
+    Debugln("task_1_min : end");
     task_1_min = false;
   } else if (task_mqtt) { 
     // -------------------------------
     // Envoi péroidique temp & hum par mqttPost()
     // -------------------------------
     //gestion connexion Mqtt
-    mqtt.Connect(mqttCallback, config.mqtt.host, config.mqtt.port, config.mqtt.topic, config.mqtt.user, config.mqtt.pswd,true);
+    ret = mqtt.Connect(mqttCallback, config.mqtt.host, config.mqtt.port, config.mqtt.topic, config.mqtt.user, config.mqtt.pswd,true);
     // Mqtt Publier les données; 
-    mqttPost(MQTT_TEMPERATURE_TOPIC,tempConfigToDisplay(t_current_temp)); 
-    mqttPost(MQTT_HUMIDITY_TOPIC,String(t_current_hum)); 
+    ret &= mqttPost(MQTT_TEMPERATURE_TOPIC,tempConfigToDisplay(t_current_temp)); 
+    ret &= mqttPost(MQTT_HUMIDITY_TOPIC,String(t_current_hum)); 
+    if (ret) {
+      // Si tout est ok
+      t_errors &= ~t_error_send_mqtt;
+    } else {
+      // Si Connect ou mqttPost a échoué ...
+      t_errors |= t_error_send_mqtt;
+    }
     
     task_mqtt=false; 
   } else if (task_jeedom) { 
-    jeedomPost();  
+    ret = jeedomPost();
+    if (ret) {
+      t_errors &= ~t_error_send_jeedom;
+    } else {
+      t_errors |= t_error_send_jeedom;
+    }
     task_jeedom=false;
   } else if (task_httpRequest) { 
-    httpRequest();  
+    ret = httpRequest();
+    if (ret) {
+      t_errors &= ~t_error_send_http;
+    } else {
+      t_errors |= t_error_send_http;
+    }
+      
     task_httpRequest=false;
   } 
 

@@ -4,6 +4,7 @@
 //
 // Historique : V1.0.0 2025-02-03 - Première Version Béta
 //
+//              V1.0.1 2025-03-10 - Add Thermostat errors
 // **********************************************************************************
 
 // Include Arduino header
@@ -771,6 +772,11 @@ void getSysJSONData(String & response)
 #else
   response += formatSize(esp_get_free_heap_size()) ;
 #endif
+  response += "\"},\r\n";
+
+  // Thermostat errors
+  response += "{\"na\":\"Thermostat errors\",\"va\":\"";
+  response += get_t_errors_str();
   response += "\"}\r\n";
  
   // Json end

@@ -44,6 +44,7 @@
 #define MQTT_THERMOSTAT_MODE    "thermostat/mode"
 #define MQTT_THERMOSTAT_CONFIG  "thermostat/config"
 #define MQTT_THERMOSTAT_RELAY_1 "thermostat/relay1"
+#define MQTT_THERMOSTAT_ERRORS  "thermostat/errors"
 
 #define CFG_JDOM_HOST_SIZE      32
 #define CFG_JDOM_APIKEY_SIZE    64
