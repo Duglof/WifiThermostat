@@ -149,12 +149,12 @@ String s;
   if (t_errors & t_error_send_jeedom) {
     if (s.length())
       s +=",";
-   s += "SendJeedom";  
+   s += "sendJeedom";  
   }
   if (t_errors & t_error_send_http) {
     if (s.length())
       s +=",";
-   s += "SendHttp";  
+   s += "sendHttp";  
   }
   return(s);
 }
