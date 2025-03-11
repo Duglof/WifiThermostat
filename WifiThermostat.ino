@@ -14,7 +14,7 @@
 // Avec votre téléphone
 //   Se connecter au réseau Wifi WifiTher-xxxxxx
 //   Ouvrir votre navigateur préféré (Chrome ou autre)
-//   Accéder à l'url http://192.168.4.1 (la page web de WifiTherm doit appaître)
+//   Accéder à l'url http://192.168.4.1 (la page web de WifiTherm doit apparaître)
 //   Sélectionner l'onglet 'Configuration'
 //   Renseigner
 //     Réseau Wifi
@@ -1406,18 +1406,19 @@ void setup()
 }
 
 /*
- * bool get_relais_status(int16_t i_temp, int16_t i_target_temp, int16_t i_hysteresis)
+ * bool get_relais_status(int16_t i_temp, int16_t i_target_temp, int16_t i_hysteresis, bool i_previous_status)
  * 
- * i_temp         : current temperature
- * i_target_temp  : current target temp
- * i_hysteresis   : hysteresis
+ * i_temp            : current temperature
+ * i_target_temp     : current target temp
+ * i_hysteresis      : hysteresis
+ * i_previous_status : previous relay status (to keep previous relay in case off temp inside target (+-) hyteresys )
  * 
  * return : false : relay off
  *          true  : relay on
  */
-bool get_relais_status(int16_t i_temp, int16_t i_target_temp, int16_t i_hysteresis)
+bool get_relais_status(int16_t i_temp, int16_t i_target_temp, int16_t i_hysteresis, bool i_previous_status)
 {
-bool relay_status = false;
+bool relay_status = i_previous_status;
 
   switch (config.thermostat.mode) {
     case t_mode_off :
@@ -1732,7 +1733,7 @@ int16_t  new_target;
     }
 
     // ====== update relay status ==========
-    bool relay_status = get_relais_status(new_temp,new_target, config.thermostat.hysteresis);
+    bool relay_status = get_relais_status(new_temp,new_target, config.thermostat.hysteresis, t_relay_status);
 
     if (t_relay_status != relay_status) {
       t_relay_status = relay_status;
