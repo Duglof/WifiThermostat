@@ -1,5 +1,6 @@
 # WifiThermostat
 WifiThermostat for ESP8266 or ESP32
+## Fonctionnalités
 - Serveur Web pour la configuration et le suivi (multilangue français anglais)
   - Changement de langue automatique en fonction de la langue de votre navigateur
 - Accès avec le nom réseau e.g. http://<nom réseau>.local/
@@ -43,6 +44,20 @@ WifiThermostat for ESP8266 or ESP32
 - Mise à jour via OTA (Wifi)
   - La mise à jour de logiciel peut être effectué via wifi (sans connecter la prise usb du module esp
   - La procédure est décrite dans mon autre projet github : LibTeleinfo
+
+## Configuration Wifi
+Depuis votre téléphone portable :
+- Se connecter au réseau Wifi WifiTher-XXXXXX (XXXXXX aura la valeur de votre Thermostat)
+- Navigateur (chrome ou autre) url : http://192.168.4.1
+- Sélectionner l'onglet Configuration
+- Réseau Wifi : Mettre le SSID (cliquer sur la loupe pour afficher la liste des réseaux et sélectionner le votre)
+- Clé Wifi    : Mettre le mot de passe de votre réseau Wifi
+- Clicker sur Enregistrer
+- Déployer Avancée
+- Cliquer sur Redémarrer WifiThermostat
+- WifiThermostat se connectera à votre réseau Wifi
+- Accéder à votre box pour connaître sa nouvelle adresse IP ou utiliser WifiTher-XXXXXX.local (remplacer XXXXXX par votre valeur)
+
 
 # Hardware
 
