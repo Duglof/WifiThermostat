@@ -102,6 +102,7 @@ String value;
  * return value value in tenths of a degree
  * 
  * use global thermostat parameter config.thermostat.options : bit t_option_fahrenheit
+ * arrondi à l'entier le plus proche en ajoutant 0.5
  */
  
 int16_t tempDisplayToConfig(float i_temp)
@@ -109,9 +110,9 @@ int16_t tempDisplayToConfig(float i_temp)
 int16_t value;
 
   if (config.thermostat.options & t_option_fahrenheit)
-    value = ( i_temp - 32.0 ) * 5.0 * 10.0 / 9.0;
+    value = (( i_temp - 32.0 ) * 5.0 * 10.0 / 9.0) + 0.5;
   else  
-    value = i_temp * 10.0;
+    value = (i_temp * 10.0) + 0.5;
     
   return(value);
 }
@@ -408,7 +409,7 @@ void handleFormConfig(void)
 
     // to be completed xxxxxx : check if positive value ?
     Debugf("ftemp = %f\n", ftemp);
-    config.thermostat.hysteresis = ftemp * 10.0;        // on ne fait pas de conversion !!!
+    config.thermostat.hysteresis = (ftemp * 10.0) + 0.5;        // on ne fait pas de conversion !!!
 
     ftemp = server.arg(CFG_FORM_THER_TEMP_HORSGEL).toFloat();
     config.thermostat.t_horsgel = tempDisplayToConfig(ftemp);
