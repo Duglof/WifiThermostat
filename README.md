@@ -220,6 +220,7 @@ Sous réserve de tests
 | WIFI-THERMOSTAT/thermostat/mode    | Mode               | off/antifrost/heat/cool |
 | WIFI-THERMOSTAT/thermostat/config  | Config             | manu/prog               |
 | WIFI-THERMOSTAT/thermostat/relay1  | Etat du relais     | on/off                  |
+| WIFI-THERMOSTAT/thermostat/errors  | Erreurs            | none/readSensor/sendMqtt <br> sendJeedom/sendHttp |
 
 #### Mqtt update command
 | Topic                              | Donnée             | Commentaire             |
