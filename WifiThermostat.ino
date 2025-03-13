@@ -47,7 +47,7 @@
 #include "WifiTherm.h"
 
 #include "mqtt.h"
-#include <ArduinoOTA.h>
+#include "ota.h"
 #include <EEPROM.h>
 #include <Ticker.h>
 #include "relay.h"
@@ -170,6 +170,8 @@ uint8_t   t_mode = -1;                    // current thermostat mode (undefined 
 uint8_t   t_config = -1;                  // current thermostat config (undefined at startup)
 
 MQTT  mqtt;
+
+OTAClass  ota_class;
 
 NTP ntp;
 
@@ -605,6 +607,44 @@ void ResetConfig(void)
   saveConfig();
 }
 
+// =========================================================
+// =         ota callbacks                                 =
+// =========================================================
+  void otaOnStart() { 
+    LedON(BLU_LED_PIN);
+    DebuglnF("Update Started");
+    ota_blink = true;
+  }
+
+  void otaOnProgress(unsigned int progress, unsigned int total)
+  {
+    if (ota_blink) {
+      LedON(BLU_LED_PIN);
+    } else {
+      LedOFF(BLU_LED_PIN);
+    }
+    ota_blink = !ota_blink;
+    //Debugf.printf("Progress: %u%%\n", (progress / (total / 100)));
+  }
+
+  // void ArduinoOTAClass::THandlerFunction otaOnEnd()
+  void otaOnEnd()
+  {
+    DebuglnF("Update finished restarting");
+  }
+
+  void otaOnError(ota_error_t error)
+  {
+    LedON(BLU_LED_PIN);
+    Debugf("Update Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) DebuglnF("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) DebuglnF("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) DebuglnF("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) DebuglnF("Receive Failed");
+    else if (error == OTA_END_ERROR) DebuglnF("End Failed");
+    ESP.restart(); 
+  }
+
 /* ======================================================================
 Function: WifiHandleConn
 Purpose : Handle Wifi connection / reconnection and OTA updates
@@ -758,12 +798,14 @@ int WifiHandleConn(boolean setup = false)
     WiFi.setAutoReconnect(true);
     DebuglnF("auto-reconnect armed !");
       
-	  
-    // Set OTA parameters
-    ArduinoOTA.setPort(config.ota_port);
-    ArduinoOTA.setHostname(config.host);
-    ArduinoOTA.setPassword(config.ota_auth);
-    ArduinoOTA.begin();
+    // ota : new code    
+    ota_class.Begin(  config.host,
+                      config.ota_port,
+                      config.ota_auth,
+                      otaOnStart,
+                      otaOnProgress,
+                      otaOnEnd,
+                      otaOnError);
 
     // just in case your sketch sucks, keep update OTA Available
     // Trust me, when coding and testing it happens, this could save
@@ -775,7 +817,7 @@ int WifiHandleConn(boolean setup = false)
       delay(100);
       LedOFF(BLU_LED_PIN);
       delay(200);
-      ArduinoOTA.handle();
+      ota_class.Loop();
     }
 
   } // if setup
@@ -1166,38 +1208,6 @@ void setup()
     DebuglnF("syslog not activated !");
   }
 #endif
-
-  // OTA callbacks
-  ArduinoOTA.onStart([]() { 
-    LedON(BLU_LED_PIN);
-    DebuglnF("Update Started");
-    ota_blink = true;
-  });
-
-  ArduinoOTA.onEnd([]() { 
-    DebuglnF("Update finished restarting");
-  });
-
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    if (ota_blink) {
-      LedON(BLU_LED_PIN);
-    } else {
-      LedOFF(BLU_LED_PIN);
-    }
-    ota_blink = !ota_blink;
-    //Serial.printf("Progress: %u%%\n", (progress / (total / 100)));
-  });
-
-  ArduinoOTA.onError([](ota_error_t error) {
-    LedON(BLU_LED_PIN);
-    Debugf("Update Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) DebuglnF("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) DebuglnF("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) DebuglnF("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) DebuglnF("Receive Failed");
-    else if (error == OTA_END_ERROR) DebuglnF("End Failed");
-    ESP.restart(); 
-  });
 
   // Update sysinfo variable and print them
   UpdateSysinfo(true, true);
@@ -1675,8 +1685,9 @@ int16_t  new_target;
 
   // Do all related network stuff
   server.handleClient();
-  ArduinoOTA.handle();
-
+  
+  ota_class.Loop();
+  
   // Only once task per loop, let system do it own task
   if (task_1_sec) { 
     UpdateSysinfo(false, false); 
