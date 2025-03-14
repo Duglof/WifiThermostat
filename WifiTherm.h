@@ -226,7 +226,7 @@ typedef struct
   extern ESP32WebServer server;
 #endif
 
-extern WiFiUDP OTA;
+// extern WiFiUDP OTA;
 extern unsigned long seconds;
 extern _sysinfo sysinfo;
 extern  Ticker  Tick_mqtt;

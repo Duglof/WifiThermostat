@@ -941,13 +941,13 @@ boolean ret = false;
 Function: mqttCallback
 Purpose : Déclenche les actions à la réception d'un message mqtt
           D'après http://m2mio.tumblr.com/post/30048662088/a-simple-example-arduino-mqtt-m2mio
-Input   : topic (complete topic string : ex : CLIMATE/set/setmode)
+Input   : topic (complete topic string : ex : WIFI-THERMOSTAT/set/setmode)
           payload 
           length (of the payload)
 Output  : - 
-Comments: For topic = 'CLIMATE' in WifiThermostat Setup mqtt 
-            All mqtt message with topic like CLIMATE/set/# will be received
-            ex : Message arrived on topic CLIMATE : [CLIMATE/set/setmode], 2
+Comments: For topic = 'WIFI-THERMOSTAT' in WifiThermostat Setup mqtt 
+            All mqtt message with topic like WIFI-THERMOSTAT/set/# will be received
+            ex : Message arrived on topic WIFI-THERMOSTAT : [WIFI-THERMOSTAT/set/setmode], heat
 
 ====================================================================== */
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
