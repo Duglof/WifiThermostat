@@ -42,7 +42,7 @@ WifiThermostat for ESP8266 or ESP32
     - %ITEM% : Numéro de ligne en cours du programme (-1 si température par défaut du programme)
     - %REL1% : Etat du relais du thermostat ( 0 = Off ; 1 = On)
   - Cette option permet d'envoyer l'état du relais à un relais distant en configurant l'url suivante:
-    - http://wifirel-23178f.local:80/setrelay?relay1=%REL1% (replacer wifirel-23178f par le nom réseau de votre relais déporté)
+    - http://wifirel-23178f.local:80/setrelay?relay1=%REL1% (remplacer wifirel-23178f par le nom réseau de votre relais déporté)
   - Pour projet github de WifiRelay : https://github.com/Duglof/WifiRelay  
 - Mise à jour via OTA (Wifi)
   - La mise à jour de logiciel peut être effectué via wifi (sans connecter la prise usb du module esp)
