@@ -660,6 +660,11 @@ int WifiHandleConn(boolean setup = false)
     // Pourquoi ce n'était pas appelé avant V1.0.9 et précédente
     WiFi.mode(WIFI_STA);
 
+    // Sinon le ping avec le hostname ne fonctionne pas !!!
+    if(*config.host) {
+      WiFi.hostname(config.host);
+    }
+
     DebuglnF("========== WiFi.printDiag Start"); 
     WiFi.printDiag(DEBUG_SERIAL);
     DebuglnF("========== WiFi.printDiag End"); 
@@ -1181,14 +1186,6 @@ void setup()
 
   // start Wifi connect or soft AP
   WifiHandleConn(true);
-
-  // start mDNS
-  // Start mDNS at esp8266.local address
-  if (!MDNS.begin(config.host)) {             
-    Debugln("Error starting mDNS");
-  } else {
-    Debugf("mDNS started %s.local", config.host);
-  }
   
 #ifdef SYSLOG
   //purge previous debug message,

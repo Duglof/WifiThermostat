@@ -776,7 +776,7 @@ void getSysJSONData(String & response)
   response += "\"},\r\n";
 
   // Thermostat errors
-  response += "{\"na\":\"Thermostat errors\",\"va\":\"";
+  response += "{\"na\":\"WifiThermostat errors\",\"va\":\"";
   response += get_t_errors_str();
   response += "\"}\r\n";
  

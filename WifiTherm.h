@@ -15,18 +15,17 @@
 #ifdef ESP8266
   // ESP8266
   #include <ESP8266WiFi.h>
-  #include <ESP8266mDNS.h>
+  // #include <ESP8266mDNS.h>     // ArduinoOTA inialise déjà mDNS, il ne faut pas le rajouter
   #include <ESP8266WebServer.h>
   #include <ESP8266HTTPClient.h>
-  #include <ESP8266mDNS.h>
   #include "LittleFS.h"
 #elif defined(ESP32)
   // ESP32
   #include <WiFi.h>
   #include <ESPmDNS.h>
-  #include <ESP32WebServer.h>    // https://github.com/Pedroalbuquerque/ESP32WebServer download and place in your Libraries folder
+  #include <ESP32WebServer.h>     // https://github.com/Pedroalbuquerque/ESP32WebServer download and place in your Libraries folder
   #include <HTTPClient.h>
-  #include <ESPmDNS.h>
+  // #include <ESPmDNS.h>         // ArduinoOTA inialise déjà mDNS, il ne faut pas le rajouter
   #include <esp_wifi.h>
 
   #include "LittleFS.h"
