@@ -657,13 +657,23 @@ int WifiHandleConn(boolean setup = false)
   int ret = WiFi.status();
 
   if (setup) {
+    #ifdef ESP32
+      // ESP32 Doc espressif : https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
+      // The setHostname() function must be called BEFORE Wi-Fi is started with WiFi.begin(), WiFi.softAP(), WiFi.mode(), or WiFi.run() 
+      if(*config.host) {
+        WiFi.setHostname(config.host);
+      }
+    #endif
+
     // Pourquoi ce n'était pas appelé avant V1.0.9 et précédente
     WiFi.mode(WIFI_STA);
 
-    // Sinon le ping avec le hostname ne fonctionne pas !!!
-    if(*config.host) {
-      WiFi.hostname(config.host);
-    }
+    #ifdef ESP8266
+      // Sinon le ping avec le hostname ne fonctionne pas !!!
+      if(*config.host) {
+        WiFi.hostname(config.host);
+      }
+    #endif
 
     DebuglnF("========== WiFi.printDiag Start"); 
     WiFi.printDiag(DEBUG_SERIAL);
@@ -1101,7 +1111,7 @@ void setup()
 
   optval = "";
 
-#if THER_SIMU
+#ifdef THER_SIMU
   optval += "SIMU, ";
 #elif defined(THER_DS18B20)
   optval += "DS18B20, ";
@@ -1574,6 +1584,9 @@ bool ret = true;
   float l_temperature = 20.2 + random(-15, 15) / 10.0; // Generate a random temperature value between 18.7° and 21.7°
   float l_humidity    = random(45, 55);                // Generate a random humidity value between 45% and 55%
 
+  Debugf( "SIMU temp = %.2f °C\n", l_temperature);
+  Debugf( "SIMU hum = %.0f %%\n", l_humidity);
+
   o_temp = l_temperature * 10;              // Temperature en dixième de degré : 175 = 17.5°C
   o_hum = l_humidity;                       // Humidité de 0 à 100%
 
@@ -1585,7 +1598,7 @@ bool ret = true;
   Debugf( "DS16B20 temp = %f °C\n", intempC);
   o_temp = intempC * 10;
   if ( intempC == -127 ) {
-    // La lecture du capteur DS18B20 à echoué
+    // La lecture du capteur DS18B20 à échoué
     ret = false;
   }
   o_hum = -1;    // DS18B20 n'a pas de capteur d'humidité
@@ -1625,7 +1638,7 @@ bool ret = true;
     }
     
     float inHumidity = sensors_bme280.readHumidity();
-    Debugf( "BME280 hum = %f °C\n", inHumidity);
+    Debugf( "BME280 hum = %f %%\n", inHumidity);
   
     // Même test pour l'humidité ...
     if ( inHumidity == 0.0 ) {
@@ -1651,7 +1664,7 @@ bool ret = true;
   }
 
   float inHumidity = sensors_htu.readHumidity();
-  Debugf( "HTU21 hum = %f °C\n", inHumidity);
+  Debugf( "HTU21 hum = %f %%\n", inHumidity);
 
   if ( isnan(inHumidity )) {       // isnan fonctionne avec un capteur HTU21
     ret = false;
